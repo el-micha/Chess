@@ -105,7 +105,7 @@ public class Board
         move.agent.pos = move.targetSquare;
 
         if (move.isPromotion) {
-            // callback piece to delete, square of new queen and whether we are unpromoting(for undoMove)
+            // callback piece to delete, square of new queen
             Piece newQueen = game.callbackPromotion(move.agent, move.targetSquare);
             move.targetSquare.visitor = newQueen;
         }
@@ -124,6 +124,7 @@ public class Board
         // revive taken piece
         // if promotion: unpromote
         // if castling: put back rook, too
+        System.out.println(this.toString());
 
         move.agent.pos = move.originSquare;
         move.originSquare.visitor = move.agent;
@@ -138,6 +139,9 @@ public class Board
             // on the targetSquare, there now is a queen. delete her and put the pawn back at
             // originSquare
             Piece demotee = move.targetSquare.visitor;
+            if (demotee == null) {
+                System.out.println("darn");
+            }
             Piece oldPawn = game.callbackDemotion(demotee, move.originSquare);
             move.originSquare.visitor = oldPawn;
         }

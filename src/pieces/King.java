@@ -71,7 +71,7 @@ public class King extends Piece
     }
 
     private boolean enemyPieceAtPos(Square square, String piece) {
-        if (square != null && square.visitor != null && square.visitor.name == piece && square.visitor.color != color) {
+        if (square != null && square.visitor != null && square.visitor.name.equals(piece) && square.visitor.color != color) {
             return true;
         }
         return false;
@@ -123,11 +123,11 @@ public class King extends Piece
             }
             if (target.visitor != null) {
                 // TODO: string comparisons
-                if (target.visitor.color != color && target.visitor.name == "Queen") {
+                if (target.visitor.color != color && target.visitor.name.equals("Queen")) {
                     return true;
-                } else if (target.visitor.color != color && orth && target.visitor.name == "Rook") {
+                } else if (target.visitor.color != color && orth && target.visitor.name.equals("Rook")) {
                     return true;
-                } else if (target.visitor.color != color && !orth && target.visitor.name == "Bishop") {
+                } else if (target.visitor.color != color && !orth && target.visitor.name.equals("Bishop")) {
                     return true;
                 } else // there is a non-ray piece in the way; we can stop here
                 {

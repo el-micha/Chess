@@ -56,19 +56,19 @@ public class Move
             castlingPartnerTarget = b.squares[agent.pos.index + rookTranslation];
 
             // sanity check
-            if (castlingPartner.name != "Rook") {
+            if (!castlingPartner.name.equals("Rook")) {
                 System.out.println("Error: Tried to castling with a non-rook: " + castlingPartner.name);
             }
         }
     }
 
     private boolean isPromotion(Piece a, Square targetS) {
-        return (a.name == "Pawn" && inEndRank(targetS.index));
+        return (a.name.equals("Pawn") && inEndRank(targetS.index));
     }
 
     private boolean isCastling(Piece a, Square targetS) {
 
-        return (a.name == "King" && Math.abs(a.pos.index - targetS.index) == 2);
+        return (a.name.equals("King") && Math.abs(a.pos.index - targetS.index) == 2);
     }
 
     private boolean inEndRank(int i) {
