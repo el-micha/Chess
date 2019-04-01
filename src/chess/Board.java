@@ -8,7 +8,7 @@ public class Board
     /*
      * A board has a state and pieces
      * Can return possible moves for a player
-     * Can make a move
+     * Can make a move and undo it
      * Has a win condition and can return the win state
      */
 
@@ -105,6 +105,10 @@ public class Board
         move.agent.pos = move.targetSquare;
 
         if (move.isPromotion) {
+        	System.out.println("Promotion");
+        	System.out.println("Promoting from " + move.originSquare.index + " to " + move.targetSquare.index);
+        	System.out.println("Promoting from " + move.originSquare.visitor + " to " + move.targetSquare.visitor);
+
             // callback piece to delete, square of new queen
             Piece newQueen = game.callbackPromotion(move.agent, move.targetSquare);
             move.targetSquare.visitor = newQueen;
@@ -124,27 +128,36 @@ public class Board
         // revive taken piece
         // if promotion: unpromote
         // if castling: put back rook, too
-        System.out.println(this.toString());
+        //System.out.println(this.toString());
 
         move.agent.pos = move.originSquare;
         move.originSquare.visitor = move.agent;
-        move.targetSquare.visitor = null; // or a taken piece
-
-        if (move.taking) {
-            move.targetPiece.alive = true;
-            takenPieces.remove(move.targetPiece);
-            move.targetSquare.visitor = move.targetPiece; // it should have retained its pos.
-        }
+        // THE FOLLOWING LINE RUINS UNPROMOTION
+        if (!move.isPromotion)
+        	move.targetSquare.visitor = null; // or a taken piece 
+        
         if (move.isPromotion) {
             // on the targetSquare, there now is a queen. delete her and put the pawn back at
             // originSquare
+        	System.out.println("Unpromotion");
+            System.out.println("Unpromoting from " + move.originSquare.index + " to " + move.targetSquare.index);
+            System.out.println("Unpromoting from " + move.originSquare.visitor + " to " + move.targetSquare.visitor);
+
             Piece demotee = move.targetSquare.visitor;
             if (demotee == null) {
                 System.out.println("darn");
             }
             Piece oldPawn = game.callbackDemotion(demotee, move.originSquare);
             move.originSquare.visitor = oldPawn;
+            move.targetSquare.visitor = null;
         }
+        
+        if (move.taking) {
+            move.targetPiece.alive = true;
+            takenPieces.remove(move.targetPiece);
+            move.targetSquare.visitor = move.targetPiece; // it should have retained its pos.
+        }
+        
         if (move.isCastling) {
             move.castlingPartner.pos = move.castlingPartnerOrigin;
             move.castlingPartnerTarget.visitor = null;
