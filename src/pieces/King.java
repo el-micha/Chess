@@ -40,8 +40,8 @@ public class King extends Piece
         }
 
         // rooks are at +3 or -4
-        Piece r1 = b.squares[pos.index - 4].visitor;
-        Piece r2 = b.squares[pos.index + 3].visitor;
+        Piece r1 = b.squares[pos.index - 4].getVisitor();
+        Piece r2 = b.squares[pos.index + 3].getVisitor();
         if (r1 != null && !r1.hasMoved) {
             Move m = new Move(b, this, b.squares[pos.index - 2]);
             moves.add(m);
@@ -71,7 +71,9 @@ public class King extends Piece
     }
 
     private boolean enemyPieceAtPos(Square square, String piece) {
-        if (square != null && square.visitor != null && square.visitor.name.equals(piece) && square.visitor.color != color) {
+        if (square != null && square.getVisitor() != null && square.getVisitor().name.equals(piece)
+                && square.getVisitor().color != color)
+        {
             return true;
         }
         return false;
@@ -121,13 +123,12 @@ public class King extends Piece
             {
                 return false;
             }
-            if (target.visitor != null) {
-                // TODO: string comparisons
-                if (target.visitor.color != color && target.visitor.name.equals("Queen")) {
+            if (target.getVisitor() != null) {
+                if (target.getVisitor().color != color && target.getVisitor().name.equals("Queen")) {
                     return true;
-                } else if (target.visitor.color != color && orth && target.visitor.name.equals("Rook")) {
+                } else if (target.getVisitor().color != color && orth && target.getVisitor().name.equals("Rook")) {
                     return true;
-                } else if (target.visitor.color != color && !orth && target.visitor.name.equals("Bishop")) {
+                } else if (target.getVisitor().color != color && !orth && target.getVisitor().name.equals("Bishop")) {
                     return true;
                 } else // there is a non-ray piece in the way; we can stop here
                 {

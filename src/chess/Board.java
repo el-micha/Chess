@@ -22,7 +22,7 @@ public class Board
         squares = new Square[64];
         // Black = 0, White = 1; Top left square is white, so 1.
         for (int i = 0; i < squares.length; i++) {
-            squares[i] = new Square(i);
+            squares[i] = new Square(i, this);
         }
         moveHistory = new ArrayList<Move>();
         takenPieces = new ArrayList<Piece>();
@@ -32,8 +32,113 @@ public class Board
 
     public void setupInitial(ArrayList<Piece> pieces) {
         for (Piece piece : pieces) {
-            piece.pos.visitor = piece;
+            piece.position().setVisitor(piece);
         }
+    }
+
+    /**
+     * Check if targetSquare is empty or an enemy
+     * Kill piece on targetSquare, prepare to return it.
+     * Remove piece on targetSquare (detach both)
+     * Move agent to targetSquare
+     * 
+     * @param agent
+     * @param targetSquare
+     */
+    private Piece movePiece(Piece agent, Square targetSquare) {
+        Piece victim = targetSquare.getVisitor();
+        if (victim != null) {
+            victim.setDead();
+            detachPiece(victim);
+        }
+        if (agent.position() != null) {
+            agent.position().setVisitor(null);
+        }
+        agent.setPosition(targetSquare);
+        targetSquare.setVisitor(agent);
+        return victim;
+    }
+
+    private void detachPiece(Piece p) {
+        p.position().setVisitor(null);
+        p.setPosition(null);
+    }
+
+    public void applyMove(Move move) {
+        /*
+         * normal harmless move
+         * taking move
+         * 
+         * castling: not taking
+         * promotion: harmless or taking
+         */
+
+        // 1) move the piece and 2) remove targetPiece
+        movePiece(move.agent(), move.targetSquare());
+
+        // 3) promote
+        if (move.isPromotion()) {
+            // agent has moved already
+            detachPiece(move.agent());
+            Piece queen = game.callbackPromotion(move.agent(), move.targetSquare());
+            movePiece(queen, move.targetSquare());
+        }
+
+        // 4) castling
+        if (move.isCastling()) {
+            movePiece(move.castlingPartner(), move.castlingPartnerTarget());
+        }
+
+        move.agent().setMoved();
+    }
+
+    public void undoMove(Move move) {
+        /*
+         * move has the same information as in applyMove, but the board state has changed.
+         * 
+         */
+
+        // 3) unpromote
+        if (move.isPromotion()) {
+            // remove the queen; the original pawn (stored in move object) will be moved next
+            // there is a queen on the targetsquare, not stored by the move object
+            Piece queen = move.targetSquare().getVisitor();
+            queen.setDead();
+            detachPiece(queen);
+            // set pawn alive again, but put it back in the next step
+            move.agent().setAlive();
+        }
+
+        // 1) move the piece back
+        movePiece(move.agent(), move.originSquare());
+        // 2) recreate taken piece
+        if (move.taking()) {
+            move.targetPiece().setAlive();
+            movePiece(move.targetPiece(), move.targetSquare());
+        }
+
+        // 4) uncastling
+        if (move.isCastling()) {
+            movePiece(move.castlingPartner(), move.castlingPartnerOrigin());
+        }
+
+        move.agent().resetMoved();
+    }
+
+    public Square translate(Square start, int trans) {
+        int targetIndex = start.index + trans;
+        if (targetIndex < 0 || targetIndex >= 64) {
+            return null;
+        }
+        return squares[targetIndex];
+    }
+
+    public Piece pieceAt(Square square) {
+        return square.getVisitor();
+    }
+
+    public Piece pieceAt(int index) {
+        return squares[index].getVisitor();
     }
 
     public String toString() {
@@ -42,8 +147,8 @@ public class Board
         String[] yPointers = {" ", " ", " ", " ", " ", " ", " ", " "};
         if (moveHistory.size() > 0) {
             Move lastMove = moveHistory.get(moveHistory.size() - 1);
-            int originIndex = lastMove.originSquare.index;
-            int targetIndex = lastMove.targetSquare.index;
+            int originIndex = lastMove.originSquare().index;
+            int targetIndex = lastMove.targetSquare().index;
             int ox = originIndex % 8;
             int oy = originIndex / 8;
             int tx = targetIndex % 8;
@@ -85,102 +190,6 @@ public class Board
         s += "\n  " + xPointers;
 
         return s;
-    }
-
-    public void applyMove(Move move) {
-        /*
-         * In order to undo a move, we need:
-         * 1) The original pos of the moving piece(s)
-         * 2) The target pos and what Piece there was before the move
-         * 3) Special moves like Promotion and Castling need extra work
-         * 4) if the moving piece has not moved before, its .hasMoved needs to be reset
-         */
-
-        if (move.taking) {
-            move.targetPiece.alive = false;
-            takenPieces.add(move.targetPiece);
-        }
-        move.originSquare.visitor = null;
-        move.targetSquare.visitor = move.agent;
-        move.agent.pos = move.targetSquare;
-
-        if (move.isPromotion) {
-        	System.out.println("Promotion");
-        	System.out.println("Promoting from " + move.originSquare.index + " to " + move.targetSquare.index);
-        	System.out.println("Promoting from " + move.originSquare.visitor + " to " + move.targetSquare.visitor);
-
-            // callback piece to delete, square of new queen
-            Piece newQueen = game.callbackPromotion(move.agent, move.targetSquare);
-            move.targetSquare.visitor = newQueen;
-        }
-        if (move.isCastling) {
-            move.castlingPartnerOrigin.visitor = null;
-            move.castlingPartnerTarget.visitor = move.castlingPartner;
-            move.castlingPartner.pos = move.castlingPartnerTarget;
-        }
-        move.agent.hasMovedOld = move.agent.hasMoved;
-        move.agent.hasMoved = true;
-        moveHistory.add(move);
-    }
-
-    public void undoMove(Move move) {
-        // put agent back
-        // revive taken piece
-        // if promotion: unpromote
-        // if castling: put back rook, too
-        //System.out.println(this.toString());
-
-        move.agent.pos = move.originSquare;
-        move.originSquare.visitor = move.agent;
-        // THE FOLLOWING LINE RUINS UNPROMOTION
-        if (!move.isPromotion)
-        	move.targetSquare.visitor = null; // or a taken piece 
-        
-        if (move.isPromotion) {
-            // on the targetSquare, there now is a queen. delete her and put the pawn back at
-            // originSquare
-        	System.out.println("Unpromotion");
-            System.out.println("Unpromoting from " + move.originSquare.index + " to " + move.targetSquare.index);
-            System.out.println("Unpromoting from " + move.originSquare.visitor + " to " + move.targetSquare.visitor);
-
-            Piece demotee = move.targetSquare.visitor;
-            if (demotee == null) {
-                System.out.println("darn");
-            }
-            Piece oldPawn = game.callbackDemotion(demotee, move.originSquare);
-            move.originSquare.visitor = oldPawn;
-            move.targetSquare.visitor = null;
-        }
-        
-        if (move.taking) {
-            move.targetPiece.alive = true;
-            takenPieces.remove(move.targetPiece);
-            move.targetSquare.visitor = move.targetPiece; // it should have retained its pos.
-        }
-        
-        if (move.isCastling) {
-            move.castlingPartner.pos = move.castlingPartnerOrigin;
-            move.castlingPartnerTarget.visitor = null;
-        }
-
-        move.agent.hasMoved = move.agent.hasMovedOld;
-        moveHistory.remove(move);
-    }
-
-    public Square translate(Square start, int trans) {
-        int targetIndex = start.index + trans;
-        if (targetIndex < 0 || targetIndex >= 64) {
-            return null;
-        }
-        return squares[targetIndex];
-    }
-
-    public Piece pieceAt(Square square) {
-        return square.visitor;
-    }
-
-    public Piece pieceAt(int index) {
-        return squares[index].visitor;
     }
 
     public String charToSymbol(String ch) {

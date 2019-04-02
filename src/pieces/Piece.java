@@ -17,21 +17,64 @@ public abstract class Piece
      * Can be used or unused. Important for castling.
      * Has color: 0 black, 1 white
      */
-
-    public boolean alive = true;
-    public Square pos = null;
-    public Player player;
-    public int color;
-    public boolean hasMoved = false;
-    public boolean hasMovedOld = false;
-    public String name;
+    public final Player player;
+    public final int color;
     public String c;
+
+    protected boolean alive = true;
+    protected Square pos = null;
+    protected boolean hasMoved = false;
+    protected boolean hasMovedOld = false;
+    protected String name;
 
     public Piece(Player p, Square position) {
         player = p;
         color = player.color;
         pos = position;
         c = "@";
+    }
+
+    public void setPosition(Square targetSquare) {
+        pos = targetSquare;
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setDead() {
+        alive = false;
+        player.callbackDead(this);
+    }
+
+    public void setAlive() {
+        alive = true;
+        player.callbackAlive(this);
+    }
+
+    public Square position() {
+        return pos;
+    }
+
+    public int pos() {
+        return pos.index;
+    }
+
+    public boolean hasMoved() {
+        return hasMoved;
+    }
+
+    public void setMoved() {
+        hasMovedOld = hasMoved;
+        hasMoved = true;
+    }
+
+    public void resetMoved() {
+        hasMoved = hasMovedOld;
+    }
+
+    public String name() {
+        return name;
     }
 
     public String ch() {
@@ -44,21 +87,21 @@ public abstract class Piece
     public abstract ArrayList<Move> legalMoves(Board b);
 
     public boolean squareEmpty(Square square) {
-        return square.visitor == null;
+        return square.getVisitor() == null;
     }
 
     public boolean occupiedByFriend(Square square) {
-        if (square.visitor == null) {
+        if (square.getVisitor() == null) {
             return false;
         }
-        return square.visitor.color == this.color;
+        return square.getVisitor().color == this.color;
     }
 
     public boolean occupiedByEnemy(Square square) {
-        if (square.visitor == null) {
+        if (square.getVisitor() == null) {
             return false;
         }
-        return square.visitor.color != this.color;
+        return square.getVisitor().color != this.color;
     }
 
     public boolean moveEndangersKing(Board b, Move move) {

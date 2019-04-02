@@ -55,8 +55,9 @@ public abstract class Player
 
     public ArrayList<Move> legalMoves(Board b) {
         ArrayList<Move> moves = new ArrayList<Move>();
-        for (Piece piece : pieces) {
-            if (!piece.alive) {
+        for (int i = 0; i < pieces.size(); i++) {
+            Piece piece = pieces.get(i);
+            if (!piece.isAlive()) {
                 continue;
             }
             moves.addAll(piece.legalMoves(b));
@@ -66,4 +67,11 @@ public abstract class Player
 
     public abstract void makeMove(Board b);
 
+    public void callbackDead(Piece p) {
+        pieces.remove(p);
+    }
+
+    public void callbackAlive(Piece p) {
+        pieces.add(p);
+    }
 }

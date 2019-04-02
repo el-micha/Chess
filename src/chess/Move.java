@@ -13,33 +13,37 @@ public class Move
      * - is promotion? then piece must be exchanged
      */
 
-    public Piece agent;
-    public Piece targetPiece;
-    public Square originSquare;
-    public Square targetSquare;
-    public boolean taking;
+    /*
+     * set these parameters once at creation and then leave them be.
+     */
+
+    private final Piece agent;
+    private final Piece targetPiece;
+    private final Square originSquare;
+    private final Square targetSquare;
+    private final boolean taking;
 
     // promotion?
-    public boolean isPromotion = false;
-    public boolean isCastling = false;
+    private final boolean isPromotion;
+    private final boolean isCastling;
     // castling?
-    public Piece castlingPartner;
-    public Square castlingPartnerOrigin;
-    public Square castlingPartnerTarget;
+    private final Piece castlingPartner;
+    private final Square castlingPartnerOrigin;
+    private final Square castlingPartnerTarget;
 
     public Move(Board b, Piece a, Square targetS) {
         agent = a;
-        originSquare = a.pos;
+        originSquare = a.position();
         targetSquare = targetS;
-        targetPiece = targetS.visitor;
+        targetPiece = targetS.getVisitor();
         taking = targetPiece != null;
 
-        isPromotion = isPromotion(a, targetS);
-        isCastling = isCastling(a, targetS);
+        isPromotion = a.name().equals("Pawn") && inEndRank(targetS.index);
+        isCastling = a.name().equals("King") && Math.abs(a.pos() - targetS.index) == 2;
 
         if (isCastling) {
             // find direction of move in order to find which rook is partner.
-            int dir = (int)Math.signum(targetSquare.index - agent.pos.index);
+            int dir = (int)Math.signum(targetSquare.index - agent.pos());
             int distanceToRook;
             int rookTranslation;
             if (dir > 0) {
@@ -51,24 +55,60 @@ public class Move
                 distanceToRook = -4;
                 rookTranslation = 3;
             }
-            castlingPartner = b.pieceAt(agent.pos.index + distanceToRook);
-            castlingPartnerOrigin = castlingPartner.pos;
-            castlingPartnerTarget = b.squares[agent.pos.index + rookTranslation];
+            castlingPartner = b.pieceAt(agent.pos() + distanceToRook);
+            castlingPartnerOrigin = castlingPartner.position();
+            castlingPartnerTarget = b.squares[agent.pos() + rookTranslation];
 
             // sanity check
-            if (!castlingPartner.name.equals("Rook")) {
-                System.out.println("Error: Tried to castling with a non-rook: " + castlingPartner.name);
+            if (!castlingPartner.name().equals("Rook")) {
+                System.out.println("Error: Tried to castling with a non-rook: " + castlingPartner.name());
             }
+        } else {
+            castlingPartner = null;
+            castlingPartnerOrigin = null;
+            castlingPartnerTarget = null;
         }
     }
 
-    private boolean isPromotion(Piece a, Square targetS) {
-        return (a.name.equals("Pawn") && inEndRank(targetS.index));
+    public Piece agent() {
+        return agent;
     }
 
-    private boolean isCastling(Piece a, Square targetS) {
+    public Piece targetPiece() {
+        return targetPiece;
+    }
 
-        return (a.name.equals("King") && Math.abs(a.pos.index - targetS.index) == 2);
+    public Square originSquare() {
+        return originSquare;
+    }
+
+    public Square targetSquare() {
+        return targetSquare;
+    }
+
+    public boolean taking() {
+        return taking;
+    }
+
+    public boolean isPromotion() {
+        return isPromotion;
+    }
+
+    public boolean isCastling() {
+
+        return isCastling;
+    }
+
+    public Piece castlingPartner() {
+        return castlingPartner;
+    }
+
+    public Square castlingPartnerOrigin() {
+        return castlingPartnerOrigin;
+    }
+
+    public Square castlingPartnerTarget() {
+        return castlingPartnerTarget;
     }
 
     private boolean inEndRank(int i) {

@@ -21,15 +21,15 @@ public class RandomPlayer extends Player
             return;
         }
         Move randomMove = legalMoves.get(new Random().nextInt(legalMoves.size()));
-        String origin = indexToStr(randomMove.originSquare.index);
-        String target = indexToStr(randomMove.targetSquare.index);
+        String origin = indexToStr(randomMove.originSquare().index);
+        String target = indexToStr(randomMove.targetSquare().index);
         String victim;
-        if (randomMove.taking) {
-            victim = " taking " + randomMove.targetPiece.name;
+        if (randomMove.taking()) {
+            victim = " taking " + randomMove.targetPiece().name();
         } else {
             victim = "";
         }
-        System.out.println(randomMove.agent.name + " from " + origin + " to " + target + victim);
+        System.out.println(randomMove.agent().name() + " from " + origin + " to " + target + victim);
         b.applyMove(randomMove);
 
     }
