@@ -16,7 +16,7 @@ public class Game
     Player black;
 
     private boolean gameFinished = false;
-    private Player loosingCandidate = null;
+    private Player losingCandidate = null;
 
     int turn; // white's turns are even, black's are odd
 
@@ -43,13 +43,15 @@ public class Game
                 break;
             }
         }
-        if (loosingCandidate.king.isInCheck(board)) {
-            System.out.println("Player " + loosingCandidate.name
+        if (losingCandidate.king.isInCheck(board)) {
+            System.out.println("Player " + losingCandidate.name
                     + ", that utter wretch, is also in check, wherefore his King is dead and he hath lost.");
+            System.out.println("Player " + otherPlayer(losingCandidate).name + " wins the game.");
         } else {
-            System.out.println("Player " + otherPlayer(loosingCandidate).name
+            System.out.println("Player " + otherPlayer(losingCandidate).name
                     + ", the even greater fool, did not manage to check player "
-                    + loosingCandidate.name + ", forcing a stalemate.");
+                    + losingCandidate.name + ", forcing a stalemate.");
+            System.out.println("Game is a stalemate!");
         }
         System.out.println("Game hath ended.");
     }
@@ -93,7 +95,7 @@ public class Game
         if (!simulation) {
             System.out.println("Player " + p.name + ", that fool, hath no more legal moves.");
             gameFinished = true;
-            loosingCandidate = p;
+            losingCandidate = p;
         }
     }
 }
