@@ -9,6 +9,7 @@ import players.Player;
 public class King extends Piece
 {
     public static int[] kingTranslations = {-9, -8, -7, -1, 1, 7, 8, 9};
+    // TODO: these translations are wrong, because they allow King to move across border. 8 - 1 = 7
 
     public King(Player p, Square position) {
         super(p, position);
@@ -86,13 +87,20 @@ public class King extends Piece
         if (color == 0) {
             dir = -1;
         }
-        Square square1 = b.translate(pos, 8 * dir - 1);
-        Square square2 = b.translate(pos, 8 * dir + 1);
-        if (enemyPieceAtPos(square1, "Pawn")) {
-            return true;
+        // only check if not at border
+        if (!(pos.index % 8 == 0)) {
+            Square square1 = b.translate(pos, 8 * dir - 1);
+            if (enemyPieceAtPos(square1, "Pawn")) {
+                return true;
+            }
+
         }
-        if (enemyPieceAtPos(square2, "Pawn")) {
-            return true;
+        if (!(pos.index % 8 == 7)) {
+            Square square2 = b.translate(pos, 8 * dir + 1);
+            if (enemyPieceAtPos(square2, "Pawn")) {
+                return true;
+            }
+
         }
         return false;
     }

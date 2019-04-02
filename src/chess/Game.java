@@ -37,6 +37,7 @@ public class Game
 
     public void play(int maxMoves) {
         for (int i = 0; i < maxMoves; i++) {
+            System.out.println("Halfturn " + i);
             nextHalfturn();
             // check if board is won, stale etc
             if (gameFinished) {

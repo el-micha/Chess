@@ -125,11 +125,35 @@ public class Board
         move.agent().resetMoved();
     }
 
+    private int x(int t) {
+        return (int)Math.signum(t) * (Math.abs(t) % 8);
+    }
+
+    private int y(int t) {
+        return (int)(t / 8);
+    }
+
+    private int t(int x, int y) {
+        return x + 8 * y;
+    }
+
     public Square translate(Square start, int trans) {
+        // convert everything to 2d model, so it is easier to check for out of bounds
+        int startx = x(start.index);
+        int starty = y(start.index);
+        int targetx = x(start.index + trans);
+        int targety = y(start.index + trans);
+
+        // TODO: nobody can move across border. check for that.
         int targetIndex = start.index + trans;
         if (targetIndex < 0 || targetIndex >= 64) {
             return null;
         }
+        // if the direction of trans points right, then the target location must be right of the start,
+        // otherwise we go across borders
+        // same for left
+        int transDir = (int)Math.signum(trans);
+
         return squares[targetIndex];
     }
 
