@@ -105,9 +105,9 @@ public class Board
         move.agent.pos = move.targetSquare;
 
         if (move.isPromotion) {
-        	System.out.println("Promotion");
-        	System.out.println("Promoting from " + move.originSquare.index + " to " + move.targetSquare.index);
-        	System.out.println("Promoting from " + move.originSquare.visitor + " to " + move.targetSquare.visitor);
+            System.out.println("Promotion");
+            System.out.println("Promoting from " + move.originSquare.index + " to " + move.targetSquare.index);
+            System.out.println("Promoting from " + move.originSquare.visitor + " to " + move.targetSquare.visitor);
 
             // callback piece to delete, square of new queen
             Piece newQueen = game.callbackPromotion(move.agent, move.targetSquare);
@@ -128,18 +128,18 @@ public class Board
         // revive taken piece
         // if promotion: unpromote
         // if castling: put back rook, too
-        //System.out.println(this.toString());
+        // System.out.println(this.toString());
 
         move.agent.pos = move.originSquare;
         move.originSquare.visitor = move.agent;
         // THE FOLLOWING LINE RUINS UNPROMOTION
         if (!move.isPromotion)
-        	move.targetSquare.visitor = null; // or a taken piece 
-        
+            move.targetSquare.visitor = null; // or a taken piece
+
         if (move.isPromotion) {
             // on the targetSquare, there now is a queen. delete her and put the pawn back at
             // originSquare
-        	System.out.println("Unpromotion");
+            System.out.println("Unpromotion");
             System.out.println("Unpromoting from " + move.originSquare.index + " to " + move.targetSquare.index);
             System.out.println("Unpromoting from " + move.originSquare.visitor + " to " + move.targetSquare.visitor);
 
@@ -151,13 +151,13 @@ public class Board
             move.originSquare.visitor = oldPawn;
             move.targetSquare.visitor = null;
         }
-        
+
         if (move.taking) {
             move.targetPiece.alive = true;
             takenPieces.remove(move.targetPiece);
             move.targetSquare.visitor = move.targetPiece; // it should have retained its pos.
         }
-        
+
         if (move.isCastling) {
             move.castlingPartner.pos = move.castlingPartnerOrigin;
             move.castlingPartnerTarget.visitor = null;
@@ -212,6 +212,28 @@ public class Board
          * return "\u265F";
          * return ch;
          */
+    }
+
+    // We assume the Input is always in this form: "A2"
+    public int convertCoordinatesToArray(String stringCoordinate) {
+        char[] move;
+        int arrayCoordinate;
+        // Do this before calling this function
+        // move = stringCoordinate.split("[,]");
+        move = stringCoordinate.toCharArray();
+        int col = move[0] - 'a';
+        int row = 8 - Character.getNumericValue(move[1]);
+        arrayCoordinate = row * 8 + col;
+        return arrayCoordinate;
+    }
+
+    public String convertArrayToCoordinates(int arrayCoordinate) {
+        String stringCoordinate;
+        int row = 9 - (arrayCoordinate / 8 + 1);
+        int colInt = 'a' + arrayCoordinate % 8;
+        char col = (char)colInt;
+        stringCoordinate = Character.toString(col) + Integer.toString(row);
+        return stringCoordinate;
     }
 
 }

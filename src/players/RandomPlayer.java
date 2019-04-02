@@ -21,8 +21,9 @@ public class RandomPlayer extends Player
             return;
         }
         Move randomMove = legalMoves.get(new Random().nextInt(legalMoves.size()));
-        String origin = indexToStr(randomMove.originSquare.index);
-        String target = indexToStr(randomMove.targetSquare.index);
+
+        String origin = b.convertArrayToCoordinates(randomMove.originSquare.index);
+        String target = b.convertArrayToCoordinates(randomMove.targetSquare.index);
         String victim;
         if (randomMove.taking) {
             victim = " taking " + randomMove.targetPiece.name;
@@ -31,14 +32,6 @@ public class RandomPlayer extends Player
         }
         System.out.println(randomMove.agent.name + " from " + origin + " to " + target + victim);
         b.applyMove(randomMove);
-
-    }
-
-    public String indexToStr(int i) {
-        int x = (int)(i % 8);
-        int y = (int)(i / 8);
-        return "" + (x + 1) + "/" + (y + 1);
-
     }
 
 }
