@@ -115,7 +115,7 @@ public abstract class Piece
         }
         b.undoMove(move);
         // System.out.println("Piece: Done and undone move");
-        return danger;
+        return danger || player.king.isInCheck(b);
     }
 
     public boolean moveEndangersKing(Board b, Piece p, Square target) {

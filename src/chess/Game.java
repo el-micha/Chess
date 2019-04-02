@@ -15,6 +15,9 @@ public class Game
     Player white;
     Player black;
 
+    private boolean gameFinished = false;
+    private Player loosingCandidate = null;
+
     int turn; // white's turns are even, black's are odd
 
     public Game() {
@@ -32,20 +35,45 @@ public class Game
         System.out.println(board.toString());
     }
 
-    public void nextHalfturn() {
+    public void play(int maxMoves) {
+        for (int i = 0; i < maxMoves; i++) {
+            nextHalfturn();
+            // check if board is won, stale etc
+            if (gameFinished) {
+                break;
+            }
+        }
+        if (loosingCandidate.king.isInCheck(board)) {
+            System.out.println("Player " + loosingCandidate.name
+                    + ", that utter wretch, is also in check, wherefore his King is dead and he hath lost.");
+        } else {
+            System.out.println("Player " + otherPlayer(loosingCandidate).name
+                    + ", the even greater fool, did not manage to check player "
+                    + loosingCandidate.name + ", forcing a stalemate.");
+        }
+        System.out.println("Game hath ended.");
+    }
+
+    private void nextHalfturn() {
         if (turn % 2 == 0) {
-            System.out.println("White moves:");
+            System.out.println("White doth move:");
             white.makeMove(board);
 
         }
         if (turn % 2 == 1) {
-            System.out.println("Black moves:");
+            System.out.println("Black doth move:");
             black.makeMove(board);
 
         }
         turn++;
-        System.out.println("######################################################");
         System.out.println(board.toString());
+
+    }
+
+    public Player otherPlayer(Player p) {
+        if (p == white)
+            return black;
+        return white;
     }
 
     public Piece callbackPromotion(Piece promotee, Square targetSquare) {
@@ -54,4 +82,18 @@ public class Game
         return queen;
     }
 
+    /**
+     * if simulation == true, we ignore this because it occurred while thinking about future moves
+     * otherwise, the player has no moves left in their current situation and lose / tie
+     * 
+     * @param p
+     * @param simulation
+     */
+    public void callbackOutOfLegalMoves(Player p, boolean simulation) {
+        if (!simulation) {
+            System.out.println("Player " + p.name + ", that fool, hath no more legal moves.");
+            gameFinished = true;
+            loosingCandidate = p;
+        }
+    }
 }

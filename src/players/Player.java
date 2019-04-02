@@ -14,7 +14,7 @@ import pieces.Rook;
 public abstract class Player
 {
     public final int color;
-    final String name;
+    public final String name;
     public Board board;
     public ArrayList<Piece> pieces;
     public King king;
@@ -54,6 +54,15 @@ public abstract class Player
     }
 
     public ArrayList<Move> legalMoves(Board b) {
+        return legalMoves(b, true);
+    }
+
+    /**
+     * if simulation == true, we ignore this because it occurred while thinking about future moves
+     * otherwise, the player has no moves left in their current situation and lose / tie
+     * 
+     */
+    public ArrayList<Move> legalMoves(Board b, boolean simulation) {
         ArrayList<Move> moves = new ArrayList<Move>();
         for (int i = 0; i < pieces.size(); i++) {
             Piece piece = pieces.get(i);
@@ -61,6 +70,9 @@ public abstract class Player
                 continue;
             }
             moves.addAll(piece.legalMoves(b));
+        }
+        if (moves.size() == 0) {
+            board.game.callbackOutOfLegalMoves(this, simulation);
         }
         return moves;
     }

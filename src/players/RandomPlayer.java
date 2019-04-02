@@ -15,11 +15,19 @@ public class RandomPlayer extends Player
 
     @Override
     public void makeMove(Board b) {
-        ArrayList<Move> legalMoves = legalMoves(b);
+        ArrayList<Move> legalMoves = legalMoves(b, false);
+
         if (legalMoves.size() == 0) {
-            System.out.println("Player " + name + " has no more legal moves and loses.");
+            // System.out.println("Player " + name + " has no more legal moves and loses.");
             return;
         }
+
+        /*
+         * System.out.println("Player " + name + " legal moves: ");
+         * for (Move m : legalMoves) {
+         * System.out.println(m.originSquare().index + " to " + m.targetSquare().index);
+         * }
+         */
         Move randomMove = legalMoves.get(new Random().nextInt(legalMoves.size()));
         String origin = indexToStr(randomMove.originSquare().index);
         String target = indexToStr(randomMove.targetSquare().index);

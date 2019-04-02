@@ -52,15 +52,21 @@ public class Pawn extends Piece
         if (newPos != null && b.pieceAt(newPos) == null && !moveEndangersKing(b, this, newPos)) {
             moves.add(new Move(b, this, newPos));
         }
+
+        // careful not to take over borders: if currpos%8 is 0 or 7, don't check one side
         // taking left diagonal
-        newPos = b.translate(pos, 8 * moveDirection - 1);
-        if (newPos != null && occupiedByEnemy(newPos) && !moveEndangersKing(b, this, newPos)) {
-            moves.add(new Move(b, this, newPos));
+        if (!(pos.index % 8 == 0)) {
+            newPos = b.translate(pos, 8 * moveDirection - 1);
+            if (newPos != null && occupiedByEnemy(newPos) && !moveEndangersKing(b, this, newPos)) {
+                moves.add(new Move(b, this, newPos));
+            }
         }
         // taking right diagonal
-        newPos = b.translate(pos, 8 * moveDirection + 1);
-        if (newPos != null && occupiedByEnemy(newPos) && !moveEndangersKing(b, this, newPos)) {
-            moves.add(new Move(b, this, newPos));
+        if (!(pos.index % 8 == 7)) {
+            newPos = b.translate(pos, 8 * moveDirection + 1);
+            if (newPos != null && occupiedByEnemy(newPos) && !moveEndangersKing(b, this, newPos)) {
+                moves.add(new Move(b, this, newPos));
+            }
         }
 
         // System.out.println("Pawn has # moves " + moves.size());
