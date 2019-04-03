@@ -142,10 +142,7 @@ public class Board
     }
 
     public Square translate(Square start, int[] trans) {
-
         return getSquare(start.x + trans[0], start.y + trans[1]);
-
-        // TODO: nobody can move across border. check for that.
     }
 
     public Piece pieceAt(Square square) {
@@ -169,21 +166,20 @@ public class Board
 
             for (int i = 0; i < 8; i++) {
                 if (i == ox) {
-                    xPointers += "^ ";
+                    xPointers += "v ";
                 } else if (i == tx) {
-                    xPointers += "î ";
+                    xPointers += "V ";
                 } else {
                     xPointers += "  ";
                 }
             }
-            yPointers[oy] = "<-";
-            yPointers[ty] = "<--";
+            yPointers[oy] = "<";
+            yPointers[ty] = "<<";
 
         }
 
         String s = "";
-        s += " |a b c d e f g h";
-        s += "\n-+---------------\n";
+        s += "  " + xPointers + "\n";
         int cnt = 0;
         for (Square[] rows : squares) {
             if (cnt > 0) {
@@ -197,8 +193,8 @@ public class Board
             }
 
         }
-
-        s += "\n  " + xPointers;
+        s += "\n-+---------------";
+        s += "\n |a b c d e f g h";
 
         return s;
     }

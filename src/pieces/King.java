@@ -83,21 +83,21 @@ public class King extends Piece
     }
 
     private boolean threatByPawn(Board b) {
-        // moving direction for white pawns: -8; black pawns: +8
-        // dangerous direction for white king: -8, black king: +8
+        // moving direction for white pawns: -1; black pawns: +1
+        // dangerous direction for white king: -1, black king: +1
         int dir = 1;
         if (color == 0) {
             dir = -1;
         }
         // only check if not at border
-        if (!(pos.x == 0)) {
+        if (!(pos.y == 0)) {
             Square square1 = b.translate(pos, new int[]{dir, -1});
             if (enemyPieceAtPos(square1, "Pawn")) {
                 return true;
             }
 
         }
-        if (!(pos.x == 7)) {
+        if (!(pos.y == 7)) {
             Square square2 = b.translate(pos, new int[]{dir, 1});
             if (enemyPieceAtPos(square2, "Pawn")) {
                 return true;

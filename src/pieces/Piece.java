@@ -116,7 +116,12 @@ public abstract class Piece
 
     public boolean moveEndangersKing(Board b, Piece p, Square target) {
         Move move = new Move(b, p, target);
-        return moveEndangersKing(b, move);
+        boolean danger = moveEndangersKing(b, move);
+        if (!danger && p.name.equals("King")) {
+            System.out.println("Move does not endanger " + player.color + " king.");
+            System.out.println("target Square: " + target.x + "/" + target.y);
+        }
+        return danger;
     }
 
     public ArrayList<Move> getOrthogonalMoves(Board b) {
