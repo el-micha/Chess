@@ -8,7 +8,7 @@ import players.Player;
 
 public class King extends Piece
 {
-    public static int[] kingTranslations = {-9, -8, -7, -1, 1, 7, 8, 9};
+    public static int[][] kingTranslations = {{-1, -1}, {-1, 1}, {-1, 0}, {0, -1}, {0, 1}, {1, -1}, {1, 1}, {1, 0}};
     // TODO: these translations are wrong, because they allow King to move across border. 8 - 1 = 7
 
     public King(Player p, Square position) {
@@ -21,7 +21,7 @@ public class King extends Piece
     public ArrayList<Move> legalMoves(Board b) {
         ArrayList<Move> moves = new ArrayList<Move>();
         for (int i = 0; i < 8; i++) {
-            int move = kingTranslations[i];
+            int[] move = kingTranslations[i];
             Square newPos = b.translate(pos, move);
 
             if (newPos != null && !occupiedByFriend(newPos) && !moveEndangersKing(b, this, newPos)) {
@@ -41,14 +41,14 @@ public class King extends Piece
         }
 
         // rooks are at +3 or -4
-        Piece r1 = b.squares[pos.index - 4].getVisitor();
-        Piece r2 = b.squares[pos.index + 3].getVisitor();
+        Piece r1 = b.getSquare(pos.x, pos.y - 4).getVisitor();
+        Piece r2 = b.getSquare(pos.x, pos.y + 3).getVisitor();
         if (r1 != null && !r1.hasMoved) {
-            Move m = new Move(b, this, b.squares[pos.index - 2]);
+            Move m = new Move(b, this, b.getSquare(pos.x, pos.y - 2));
             moves.add(m);
         }
         if (r2 != null && !r2.hasMoved) {
-            Move m = new Move(b, this, b.squares[pos.index + 2]);
+            Move m = new Move(b, this, b.getSquare(pos.x, pos.y + 2));
             moves.add(m);
         }
         return moves;
@@ -59,11 +59,13 @@ public class King extends Piece
     }
 
     private boolean threatByKing(Board b) {
-        return (enemyKingHere(b, -1) || enemyKingHere(b, 1) || enemyKingHere(b, -8) || enemyKingHere(b, 8)
-                || enemyKingHere(b, -7) || enemyKingHere(b, 7) || enemyKingHere(b, -9) || enemyKingHere(b, 9));
+        return (enemyKingHere(b, new int[]{0, -1}) || enemyKingHere(b, new int[]{0, 1}) || enemyKingHere(b, new int[]{-1, 0})
+                || enemyKingHere(b, new int[]{1, 0})
+                || enemyKingHere(b, new int[]{-1, 1}) || enemyKingHere(b, new int[]{1, -1})
+                || enemyKingHere(b, new int[]{-1, -1}) || enemyKingHere(b, new int[]{1, 1}));
     }
 
-    private boolean enemyKingHere(Board b, int trans) {
+    private boolean enemyKingHere(Board b, int[] trans) {
         Square square = b.translate(pos, trans);
         if (enemyPieceAtPos(square, "King")) {
             return true;
@@ -88,15 +90,15 @@ public class King extends Piece
             dir = -1;
         }
         // only check if not at border
-        if (!(pos.index % 8 == 0)) {
-            Square square1 = b.translate(pos, 8 * dir - 1);
+        if (!(pos.x == 0)) {
+            Square square1 = b.translate(pos, new int[]{dir, -1});
             if (enemyPieceAtPos(square1, "Pawn")) {
                 return true;
             }
 
         }
-        if (!(pos.index % 8 == 7)) {
-            Square square2 = b.translate(pos, 8 * dir + 1);
+        if (!(pos.x == 7)) {
+            Square square2 = b.translate(pos, new int[]{dir, 1});
             if (enemyPieceAtPos(square2, "Pawn")) {
                 return true;
             }
@@ -107,7 +109,7 @@ public class King extends Piece
 
     private boolean threatByKnight(Board b) {
         for (int i = 0; i < 8; i++) {
-            int move = Knight.knightTranslations[i];
+            int move[] = Knight.knightTranslations[i];
             Square square = b.translate(pos, move);
             if (enemyPieceAtPos(square, "Knight")) {
                 return true;
@@ -125,7 +127,7 @@ public class King extends Piece
     private boolean threatByRay(Board b, boolean orth, int dx, int dy) {
 
         for (int i = 0; i < 7; i++) {
-            int trans = dx + 8 * dy;
+            int[] trans = {i * dx, i * dy};
             Square target = b.translate(pos, trans);
             if (target == null) // out of bounds; we can stop here
             {

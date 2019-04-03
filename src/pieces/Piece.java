@@ -56,10 +56,6 @@ public abstract class Piece
         return pos;
     }
 
-    public int pos() {
-        return pos.index;
-    }
-
     public boolean hasMoved() {
         return hasMoved;
     }
@@ -151,7 +147,7 @@ public abstract class Piece
          */
         ArrayList<Move> res = new ArrayList<Move>();
         for (int i = 0; i < 7; i++) {
-            int trans = dx + 8 * dy;
+            int[] trans = {i * dx, i * dy};
             Square target = b.translate(pos, trans);
             if (target == null || occupiedByFriend(target) || moveEndangersKing(b, this, target)) {
                 break;

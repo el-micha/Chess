@@ -13,16 +13,18 @@ public class Board
      */
 
     public Game game;
-    public Square[] squares;
-    public ArrayList<Move> moveHistory;
-    public ArrayList<Piece> takenPieces;
+    private Square[][] squares;
+    private ArrayList<Move> moveHistory;
+    private ArrayList<Piece> takenPieces;
 
     public Board(Game g) {
         game = g;
-        squares = new Square[64];
+        squares = new Square[8][8];
         // Black = 0, White = 1; Top left square is white, so 1.
-        for (int i = 0; i < squares.length; i++) {
-            squares[i] = new Square(i, this);
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                squares[i][j] = new Square(i, j, this);
+            }
         }
         moveHistory = new ArrayList<Move>();
         takenPieces = new ArrayList<Piece>();
@@ -30,10 +32,21 @@ public class Board
         System.out.println("Created Board ");
     }
 
+    public Move getLastMove() {
+        return moveHistory.get(moveHistory.size() - 1);
+    }
+
     public void setupInitial(ArrayList<Piece> pieces) {
         for (Piece piece : pieces) {
             piece.position().setVisitor(piece);
         }
+    }
+
+    public Square getSquare(int x, int y) {
+        if (x < 8 && x >= 0 && y < 8 && y >= 0)
+            return squares[x][y];
+        // System.out.println("Bad square: " + x + "/" + y);
+        return null;
     }
 
     /**
@@ -90,6 +103,8 @@ public class Board
         }
 
         move.agent().setMoved();
+
+        moveHistory.add(move);
     }
 
     public void undoMove(Move move) {
@@ -123,46 +138,22 @@ public class Board
         }
 
         move.agent().resetMoved();
+        moveHistory.remove(move);
     }
 
-    private int x(int t) {
-        return (int)Math.signum(t) * (Math.abs(t) % 8);
-    }
+    public Square translate(Square start, int[] trans) {
 
-    private int y(int t) {
-        return (int)(t / 8);
-    }
-
-    private int t(int x, int y) {
-        return x + 8 * y;
-    }
-
-    public Square translate(Square start, int trans) {
-        // convert everything to 2d model, so it is easier to check for out of bounds
-        int startx = x(start.index);
-        int starty = y(start.index);
-        int targetx = x(start.index + trans);
-        int targety = y(start.index + trans);
+        return getSquare(start.x + trans[0], start.y + trans[1]);
 
         // TODO: nobody can move across border. check for that.
-        int targetIndex = start.index + trans;
-        if (targetIndex < 0 || targetIndex >= 64) {
-            return null;
-        }
-        // if the direction of trans points right, then the target location must be right of the start,
-        // otherwise we go across borders
-        // same for left
-        int transDir = (int)Math.signum(trans);
-
-        return squares[targetIndex];
     }
 
     public Piece pieceAt(Square square) {
         return square.getVisitor();
     }
 
-    public Piece pieceAt(int index) {
-        return squares[index].getVisitor();
+    public Piece pieceAt(int x, int y) {
+        return squares[x][y].getVisitor();
     }
 
     public String toString() {
@@ -171,12 +162,10 @@ public class Board
         String[] yPointers = {" ", " ", " ", " ", " ", " ", " ", " "};
         if (moveHistory.size() > 0) {
             Move lastMove = moveHistory.get(moveHistory.size() - 1);
-            int originIndex = lastMove.originSquare().index;
-            int targetIndex = lastMove.targetSquare().index;
-            int ox = originIndex % 8;
-            int oy = originIndex / 8;
-            int tx = targetIndex % 8;
-            int ty = targetIndex / 8;
+            int ox = lastMove.originSquare().x;
+            int oy = lastMove.originSquare().y;
+            int tx = lastMove.targetSquare().x;
+            int ty = lastMove.targetSquare().y;
 
             for (int i = 0; i < 8; i++) {
                 if (i == ox) {
@@ -196,19 +185,17 @@ public class Board
         s += " |a b c d e f g h";
         s += "\n-+---------------\n";
         int cnt = 0;
-        for (Square square : squares) {
-            if (cnt % 8 == 0) {
-                if (cnt > 0) {
-                    s += yPointers[(int)(cnt / 8) - 1];
-                    s += "\n";
-                }
-
-                s += (8 - (int)(cnt / 8)) + "|";
+        for (Square[] rows : squares) {
+            if (cnt > 0) {
+                s += yPointers[(int)(cnt / 8) - 1];
+                s += "\n";
+            }
+            s += (8 - (int)(cnt / 8)) + "|";
+            for (Square square : rows) {
+                s += square.ch() + " ";
+                cnt++;
             }
 
-            s += square.ch() + " ";
-
-            cnt++;
         }
 
         s += "\n  " + xPointers;

@@ -38,8 +38,8 @@ public class Pawn extends Piece
 
         // first move: double
         if (!hasMoved) {
-            Square newPos = b.translate(pos, 16 * moveDirection);
-            Square inbetween = b.translate(pos, 8 * moveDirection);
+            Square newPos = b.translate(pos, new int[]{2 * moveDirection, 0});
+            Square inbetween = b.translate(pos, new int[]{1 * moveDirection, 0});
 
             if (newPos != null && b.pieceAt(inbetween) == null && b.pieceAt(newPos) == null
                     && !moveEndangersKing(b, this, newPos))
@@ -48,22 +48,22 @@ public class Pawn extends Piece
             }
         }
         // normal single straight step
-        Square newPos = b.translate(pos, 8 * moveDirection);
+        Square newPos = b.translate(pos, new int[]{1 * moveDirection, 0});
         if (newPos != null && b.pieceAt(newPos) == null && !moveEndangersKing(b, this, newPos)) {
             moves.add(new Move(b, this, newPos));
         }
 
         // careful not to take over borders: if currpos%8 is 0 or 7, don't check one side
         // taking left diagonal
-        if (!(pos.index % 8 == 0)) {
-            newPos = b.translate(pos, 8 * moveDirection - 1);
+        if (!(pos.x == 0)) {
+            newPos = b.translate(pos, new int[]{1 * moveDirection, -1});
             if (newPos != null && occupiedByEnemy(newPos) && !moveEndangersKing(b, this, newPos)) {
                 moves.add(new Move(b, this, newPos));
             }
         }
         // taking right diagonal
-        if (!(pos.index % 8 == 7)) {
-            newPos = b.translate(pos, 8 * moveDirection + 1);
+        if (!(pos.x == 7)) {
+            newPos = b.translate(pos, new int[]{1 * moveDirection, 1});
             if (newPos != null && occupiedByEnemy(newPos) && !moveEndangersKing(b, this, newPos)) {
                 moves.add(new Move(b, this, newPos));
             }

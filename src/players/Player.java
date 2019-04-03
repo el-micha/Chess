@@ -30,25 +30,25 @@ public abstract class Player
         int rank;
         int pawnRank;
         if (color == 1) {
-            rank = 56;
-            pawnRank = 48;
+            rank = 7;
+            pawnRank = 6;
         } else {
             rank = 0;
-            pawnRank = 8;
+            pawnRank = 1;
         }
 
-        pieces.add(new Rook(this, b.squares[rank + 0]));
-        pieces.add(new Knight(this, b.squares[rank + 1]));
-        pieces.add(new Bishop(this, b.squares[rank + 2]));
-        pieces.add(new Queen(this, b.squares[rank + 3]));
-        king = new King(this, b.squares[rank + 4]);
+        pieces.add(new Rook(this, b.getSquare(rank, 0)));
+        pieces.add(new Knight(this, b.getSquare(rank, 1)));
+        pieces.add(new Bishop(this, b.getSquare(rank, 2)));
+        pieces.add(new Queen(this, b.getSquare(rank, 3)));
+        king = new King(this, b.getSquare(rank, 4));
         pieces.add(king);
-        pieces.add(new Bishop(this, b.squares[rank + 5]));
-        pieces.add(new Knight(this, b.squares[rank + 6]));
-        pieces.add(new Rook(this, b.squares[rank + 7]));
+        pieces.add(new Bishop(this, b.getSquare(rank, 5)));
+        pieces.add(new Knight(this, b.getSquare(rank, 6)));
+        pieces.add(new Rook(this, b.getSquare(rank, 7)));
 
         for (int i = 0; i < 8; i++) {
-            pieces.add(new Pawn(this, b.squares[pawnRank + i]));
+            pieces.add(new Pawn(this, b.getSquare(pawnRank, i)));
         }
 
     }

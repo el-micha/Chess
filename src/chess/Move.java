@@ -38,12 +38,12 @@ public class Move
         targetPiece = targetS.getVisitor();
         taking = targetPiece != null;
 
-        isPromotion = a.name().equals("Pawn") && inEndRank(targetS.index);
-        isCastling = a.name().equals("King") && Math.abs(a.pos() - targetS.index) == 2;
+        isPromotion = a.name().equals("Pawn") && inEndRank();
+        isCastling = a.name().equals("King") && Math.abs(a.position().y - targetS.y) == 2;
 
         if (isCastling) {
             // find direction of move in order to find which rook is partner.
-            int dir = (int)Math.signum(targetSquare.index - agent.pos());
+            int dir = (int)Math.signum(targetSquare.y - agent.position().y);
             int distanceToRook;
             int rookTranslation;
             if (dir > 0) {
@@ -55,9 +55,9 @@ public class Move
                 distanceToRook = -4;
                 rookTranslation = 3;
             }
-            castlingPartner = b.pieceAt(agent.pos() + distanceToRook);
+            castlingPartner = b.pieceAt(agent.position().x, agent.position().y + distanceToRook);
             castlingPartnerOrigin = castlingPartner.position();
-            castlingPartnerTarget = b.squares[agent.pos() + rookTranslation];
+            castlingPartnerTarget = b.getSquare(agent.position().x, agent.position().y + rookTranslation);
 
             // sanity check
             if (!castlingPartner.name().equals("Rook")) {
@@ -111,8 +111,8 @@ public class Move
         return castlingPartnerTarget;
     }
 
-    private boolean inEndRank(int i) {
-        return ((i >= 0 && i <= 7) || (i >= 56 && i <= 63));
+    private boolean inEndRank() {
+        return ((agent.player.color == 0 && targetSquare.x == 7) || (agent.player.color == 1 && targetSquare.x == 0));
     }
 
 }

@@ -61,12 +61,17 @@ public class Game
         if (turn % 2 == 0) {
             System.out.println("White doth move:");
             white.makeMove(board);
-
         }
         if (turn % 2 == 1) {
             System.out.println("Black doth move:");
             black.makeMove(board);
 
+        }
+        if (turn > 1 && board.getLastMove().isPromotion()) {
+            System.out.println("Promotion!");
+        }
+        if (turn > 1 && board.getLastMove().isCastling()) {
+            System.out.println("Castling!");
         }
         turn++;
         System.out.println(board.toString());

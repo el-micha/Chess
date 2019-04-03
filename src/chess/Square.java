@@ -13,13 +13,15 @@ public class Square
      * White = even
      */
 
-    public final int index;
+    public final int x;
+    public final int y;
     public final String c;
     private Piece visitor = null;
     private Board board;
 
-    public Square(int i, Board b) {
-        index = i;
+    public Square(int ix, int iy, Board b) {
+        x = ix;
+        y = iy;
         board = b;
         if (color() == 1) {
             // white
@@ -46,13 +48,14 @@ public class Square
     }
 
     public int color() {
-        // even ranks: (index+1)%2
-        int rank = (int)(index / 8);
-        if (rank % 2 == 0) {
-            return (index + 1) % 2;
+        if (x % 2 == 0) {
+            return y % 2;
         }
-        return (index) % 2;
+        return (y + 1) % 2;
 
     }
 
+    public String algPos() {
+        return "" + x + "/" + y;
+    }
 }
