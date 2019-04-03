@@ -55,7 +55,16 @@ public class King extends Piece
     }
 
     public boolean isInCheck(Board b) {
-        return (threatByAnyRay(b) || threatByKnight(b) || threatByPawn(b) || threatByKing(b));
+        boolean check = (threatByAnyRay(b) || threatByKnight(b) || threatByPawn(b) || threatByKing(b));
+        if (check)
+        {
+        	System.out.println("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
+        	System.out.println("Check: " + this.color);
+        	System.out.println(b.toString());
+        	System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+
+        }
+        return check;
     }
 
     private boolean threatByKing(Board b) {
