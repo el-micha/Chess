@@ -35,8 +35,10 @@ public class King extends Piece
     }
 
     private ArrayList<Move> castlingMoves(Board b) {
+        // TODO: this need much more careful work
+        // check: nobody in the way; not through checked square.
         ArrayList<Move> moves = new ArrayList<Move>();
-        if (hasMoved) {
+        if (hasMoved || isInCheck(b)) {
             return moves;
         }
 
@@ -56,39 +58,36 @@ public class King extends Piece
 
     public boolean isInCheck(Board b) {
         boolean check = (threatByAnyRay(b) || threatByKnight(b) || threatByPawn(b) || threatByKing(b));
-        if (check)
-        {
-        	System.out.println("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
-        	System.out.println("Check: " + this.color);
-        	System.out.println(b.toString());
-        	System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+        if (check) {
+            System.out.println("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
+            System.out.println("Check: " + this.color);
+            System.out.println(b.toString());
+            System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 
         }
         return check;
     }
 
     private boolean threatByKing(Board b) {
-        return (enemyKingHere(b, new int[]{0, -1}) || enemyKingHere(b, new int[]{0, 1}) || enemyKingHere(b, new int[]{-1, 0})
+        return (enemyKingHere(b, new int[]{0, -1})
+                || enemyKingHere(b, new int[]{0, 1})
+                || enemyKingHere(b, new int[]{-1, 0})
                 || enemyKingHere(b, new int[]{1, 0})
-                || enemyKingHere(b, new int[]{-1, 1}) || enemyKingHere(b, new int[]{1, -1})
-                || enemyKingHere(b, new int[]{-1, -1}) || enemyKingHere(b, new int[]{1, 1}));
+                || enemyKingHere(b, new int[]{-1, 1})
+                || enemyKingHere(b, new int[]{1, -1})
+                || enemyKingHere(b, new int[]{-1, -1})
+                || enemyKingHere(b, new int[]{1, 1}));
     }
 
     private boolean enemyKingHere(Board b, int[] trans) {
         Square square = b.translate(pos, trans);
-        if (enemyPieceAtPos(square, "King")) {
-            return true;
-        }
-        return false;
+        return enemyPieceAtPos(square, "King");
     }
 
     private boolean enemyPieceAtPos(Square square, String piece) {
-        if (square != null && square.getVisitor() != null && square.getVisitor().name.equals(piece)
-                && square.getVisitor().color != color)
-        {
-            return true;
-        }
-        return false;
+        return square != null && square.getVisitor() != null
+                && square.getVisitor().name.equals(piece)
+                && square.getVisitor().color != color;
     }
 
     private boolean threatByPawn(Board b) {
@@ -128,14 +127,19 @@ public class King extends Piece
     }
 
     private boolean threatByAnyRay(Board b) {
-        return (threatByRay(b, true, 1, 0) || threatByRay(b, true, -1, 0) || threatByRay(b, true, 0, 1)
-                || threatByRay(b, true, 0, 1) || threatByRay(b, false, 1, 1) || threatByRay(b, false, -1, -1)
-                || threatByRay(b, false, 1, -1) || threatByRay(b, false, -1, 1));
+        return (threatByRay(b, 1, 0)
+                || threatByRay(b, -1, 0)
+                || threatByRay(b, 0, 1)
+                || threatByRay(b, 0, -1)
+                || threatByRay(b, 1, 1)
+                || threatByRay(b, -1, -1)
+                || threatByRay(b, 1, -1)
+                || threatByRay(b, -1, 1));
     }
 
-    private boolean threatByRay(Board b, boolean orth, int dx, int dy) {
-
-        for (int i = 0; i < 7; i++) {
+    private boolean threatByRay(Board b, int dx, int dy) {
+        boolean orth = (dx != 0 || dy != 0) && !((dx != 0) && (dy != 0));
+        for (int i = 1; i < 8; i++) {
             int[] trans = {i * dx, i * dy};
             Square target = b.translate(pos, trans);
             if (target == null) // out of bounds; we can stop here
