@@ -15,6 +15,7 @@ public class Pawn extends Piece
         super(p, pos);
         name = "Pawn";
         c = "p";
+        value = 1;
         // white pawns: -8, black pawns: +8
         if (color == 0) {
             moveDirection = 1;

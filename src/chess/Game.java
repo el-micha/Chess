@@ -4,6 +4,7 @@ import pieces.Piece;
 import pieces.Queen;
 import players.Player;
 import players.RandomPlayer;
+import players.SimpleHeuristicPlayer;
 
 public class Game
 {
@@ -23,7 +24,7 @@ public class Game
     public Game() {
         board = new Board(this);
         white = new RandomPlayer(1, "White", board);
-        black = new RandomPlayer(0, "Black", board);
+        black = new SimpleHeuristicPlayer(0, "Black", board);
 
         // set pieces on board
         board.setupInitial(white.pieces);

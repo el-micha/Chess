@@ -16,6 +16,7 @@ public class Knight extends Piece
         super(p, pos);
         name = "Knight";
         c = "n";
+        value = 3;
     }
 
     @Override

@@ -15,6 +15,7 @@ public class King extends Piece
         super(p, position);
         name = "King";
         c = "k";
+        value = 1;
     }
 
     @Override

@@ -14,6 +14,7 @@ public class Bishop extends Piece
 		super(p, pos);
 		name = "Bishop";
 		c = "b";
+		value = 3;
 	}
 
 	@Override

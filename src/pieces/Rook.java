@@ -14,6 +14,7 @@ public class Rook extends Piece
 		super(p, pos);
 		name = "Rook";
 		c = "r";
+		value = 5;
 	}
 
 	@Override

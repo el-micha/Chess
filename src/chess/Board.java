@@ -1,7 +1,9 @@
 package chess;
 
 import java.util.ArrayList;
+
 import pieces.Piece;
+import players.Player;
 
 public class Board
 {
@@ -188,7 +190,7 @@ public class Board
             }
             s += (8 - (int)(cnt / 8)) + "|";
             for (Square square : rows) {
-                s += square.ch() + " ";
+                s += charToSymbol(square.ch()) + " ";
                 cnt++;
             }
 
@@ -198,36 +200,48 @@ public class Board
 
         return s;
     }
-
+    
+    public int valuation(Player p)
+    {
+    	int count = 0;	
+    	for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (squares[i][j].getVisitor() != null  && squares[i][j].getVisitor().color == p.color)
+                	count += squares[i][j].getVisitor().getValue();
+            }
+        } 
+    	return count;
+    }
+    
     public String charToSymbol(String ch) {
         return ch;
-        /*
-         * if (ch == "K")
-         * return "\u2654";
-         * if (ch == "Q")
-         * return "\u2655";
-         * if (ch == "R")
-         * return "\u2656";
-         * if (ch == "B")
-         * return "\u2657";
-         * if (ch == "N")
-         * return "\u2658";
-         * if (ch == "P")
-         * return "\u2659";
-         * if (ch == "k")
-         * return "\u265A";
-         * if (ch == "q")
-         * return "\u265B";
-         * if (ch == "r")
-         * return "\u265C";
-         * if (ch == "b")
-         * return "\u265D";
-         * if (ch == "n")
-         * return "\u265E";
-         * if (ch == "p")
-         * return "\u265F";
-         * return ch;
-         */
+        
+//        if (ch.equals("K"))
+//        	return "\u2654";
+//        if (ch.equals("Q"))
+//        	return "\u2655";
+//        if (ch.equals("R"))
+//        	return "\u2656";
+//        if (ch.equals("B"))
+//        	return "\u2657";
+//        if (ch.equals("N"))
+//        	return "\u2658";
+//        if (ch.equals("P"))
+//        	return "\u2659";
+//        if (ch.equals("k"))
+//        	return "\u265A";
+//        if (ch.equals("q"))
+//        	return "\u265B";
+//        if (ch.equals("r"))
+//        	return "\u265C";
+//        if (ch.equals("b"))
+//        	return "\u265D";
+//        if (ch.equals("n"))
+//        	return "\u265E";
+//        if (ch.equals("p"))
+//        	return "\u265F";
+//        return ch;
+         
     }
 
 }

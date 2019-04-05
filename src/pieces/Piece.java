@@ -22,14 +22,21 @@ public abstract class Piece {
 	protected boolean hasMoved = false;
 	protected boolean hasMovedOld = false;
 	protected String name;
+	protected int value;
 
 	public Piece(Player p, Square position) {
 		player = p;
 		color = player.color;
 		pos = position;
 		c = "@";
+		value = 0;
 	}
-
+	
+	public int getValue()
+	{
+		return value;
+	}
+	
 	public void setPosition(Square targetSquare) {
 		pos = targetSquare;
 	}
