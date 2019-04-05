@@ -52,6 +52,11 @@ public abstract class Player
         }
 
     }
+    
+    public boolean isInCheck(Board b)
+    {
+    	return king.isInCheck(b);
+    }
 
     public ArrayList<Move> legalMoves(Board b) {
         return legalMoves(b, true);
@@ -76,7 +81,9 @@ public abstract class Player
         }
         return moves;
     }
-
+    
+    
+    
     public abstract void makeMove(Board b);
 
     public void callbackDead(Piece p) {

@@ -57,15 +57,7 @@ public class King extends Piece
     }
 
     public boolean isInCheck(Board b) {
-        boolean check = (threatByAnyRay(b) || threatByKnight(b) || threatByPawn(b) || threatByKing(b));
-        if (check) {
-            System.out.println("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
-            System.out.println("Check: " + this.color);
-            System.out.println(b.toString());
-            System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-
-        }
-        return check;
+        return (threatByAnyRay(b) || threatByKnight(b) || threatByPawn(b) || threatByKing(b));
     }
 
     private boolean threatByKing(Board b) {
@@ -93,9 +85,9 @@ public class King extends Piece
     private boolean threatByPawn(Board b) {
         // moving direction for white pawns: -1; black pawns: +1
         // dangerous direction for white king: -1, black king: +1
-        int dir = 1;
+        int dir = -1;
         if (color == 0) {
-            dir = -1;
+            dir = 1;
         }
         // only check if not at border
         if (!(pos.y == 0)) {

@@ -22,16 +22,17 @@ public class RandomPlayer extends Player
             return;
         }
 
-        /*
-         * System.out.println("Player " + name + " legal moves: ");
-         * for (Move m : legalMoves) {
-         * System.out.println(m.originSquare().index + " to " + m.targetSquare().index);
-         * }
-         */
+        
+//        System.out.println("Player " + name + " legal moves: ");
+//        for (Move m : legalMoves) {
+//        	System.out.println(m.agent().name() + " at " + m.originSquare().algPos() + " to " + m.targetSquare().algPos());
+//        }
+         
         Move randomMove = legalMoves.get(new Random().nextInt(legalMoves.size()));
         String origin = randomMove.originSquare().algPos();
         String target = randomMove.targetSquare().algPos();
         String victim;
+        //System.out.println("NOW MOVING FOR REAL...........................");
         if (randomMove.taking()) {
             victim = " taking " + randomMove.targetPiece().name();
         } else {

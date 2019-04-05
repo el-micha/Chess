@@ -37,12 +37,17 @@ public class Game
 
     public void play(int maxMoves) {
         for (int i = 0; i < maxMoves; i++) {
-            System.out.println("Halfturn " + i);
+            System.out.println("++++++++++++++++++++++++++++++ Halfturn " + i + " ++++++++++++++++++++++++++++++");
             nextHalfturn();
             // check if board is won, stale etc
             if (gameFinished) {
                 break;
             }
+        }
+        if (losingCandidate == null)
+        {
+        	System.out.println("***** Game hath run out of moves before checkmate or stalemate. *****");
+        	return;
         }
         if (losingCandidate.king.isInCheck(board)) {
             System.out.println("Player " + losingCandidate.name
@@ -58,6 +63,15 @@ public class Game
     }
 
     private void nextHalfturn() {
+    	if (white.isInCheck(board))
+    	{
+    		System.out.println("White is in check.");
+    	}
+    	if (black.isInCheck(board))
+    	{
+    		System.out.println("Black is in check.");
+    	}
+    	
         if (turn % 2 == 0) {
             System.out.println("White doth move:");
             white.makeMove(board);
