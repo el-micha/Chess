@@ -37,6 +37,10 @@ public class Square
     }
 
     public void setVisitor(Piece p) {
+    	if (visitor != null && p != null)
+    	{
+    		System.out.println("Error in Square::setVisitor: Square already has visitor.");
+    	}
         visitor = p;
     }
 

@@ -45,12 +45,19 @@ public class King extends Piece
 
         // rooks are at +3 or -4
         Piece r1 = b.getSquare(pos.x, pos.y - 4).getVisitor();
+        Piece r1_1 = b.getSquare(pos.x, pos.y - 3).getVisitor();
+        Piece r1_2 = b.getSquare(pos.x, pos.y - 2).getVisitor();
+        Piece r1_3 = b.getSquare(pos.x, pos.y - 1).getVisitor();
+        
         Piece r2 = b.getSquare(pos.x, pos.y + 3).getVisitor();
-        if (r1 != null && !r1.hasMoved) {
+        Piece r2_1 = b.getSquare(pos.x, pos.y + 2).getVisitor();
+        Piece r2_2 = b.getSquare(pos.x, pos.y + 1).getVisitor();
+        
+        if (r1 != null && !r1.hasMoved && r1_1 == null && r1_2 == null && r1_3 == null) {
             Move m = new Move(b, this, b.getSquare(pos.x, pos.y - 2));
             moves.add(m);
         }
-        if (r2 != null && !r2.hasMoved) {
+        if (r2 != null && !r2.hasMoved && r2_1 == null && r2_2 == null) {
             Move m = new Move(b, this, b.getSquare(pos.x, pos.y + 2));
             moves.add(m);
         }

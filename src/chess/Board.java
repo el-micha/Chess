@@ -10,7 +10,7 @@ public class Board
     /*
      * A board has a state and pieces
      * Can return possible moves for a player
-     * Can make a move and undo it
+     * Can make a move and undo moves
      * Has a win condition and can return the win state
      */
 
@@ -167,16 +167,16 @@ public class Board
             int ty = lastMove.targetSquare().y;
 
             for (int i = 0; i < 8; i++) {
-                if (i == ox) {
+                if (i == oy) {
                     xPointers += "v ";
-                } else if (i == tx) {
+                } else if (i == ty) {
                     xPointers += "V ";
                 } else {
                     xPointers += "  ";
                 }
             }
-            yPointers[oy] = "<";
-            yPointers[ty] = "<<";
+            yPointers[ox] = "<";
+            yPointers[tx] = "<<";
 
         }
 
