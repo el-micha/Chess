@@ -19,8 +19,8 @@ public class Move
 
     private final Piece agent;
     private final Piece targetPiece;
-    private final Square originSquare;
-    private final Square targetSquare;
+    public final Square originSquare;
+    public final Square targetSquare;
     private final boolean taking;
 
     // promotion?

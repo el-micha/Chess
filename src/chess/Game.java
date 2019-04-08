@@ -2,6 +2,7 @@ package chess;
 
 import pieces.Piece;
 import pieces.Queen;
+import players.HumanPlayer;
 import players.Player;
 import players.RandomPlayer;
 import players.SimpleHeuristicPlayer;
@@ -21,10 +22,19 @@ public class Game
 
     int turn; // white's turns are even, black's are odd
 
-    public Game() {
+    public Game(int isHumanPlayer) {
         board = new Board(this);
-        white = new RandomPlayer(1, "White", board);
-        black = new SimpleHeuristicPlayer(0, "Black", board);
+
+        if (isHumanPlayer == 1) {
+            white = new HumanPlayer(1, "White", board);
+            black = new RandomPlayer(0, "Black", board);
+        } else if (isHumanPlayer == 2) {
+            white = new RandomPlayer(1, "White", board);
+            black = new HumanPlayer(0, "Black", board);
+        } else {
+            white = new RandomPlayer(1, "White", board);
+            black = new SimpleHeuristicPlayer(0, "Black", board);
+        }
 
         // set pieces on board
         board.setupInitial(white.pieces);
@@ -45,10 +55,9 @@ public class Game
                 break;
             }
         }
-        if (losingCandidate == null)
-        {
-        	System.out.println("***** Game hath run out of moves before checkmate or stalemate. *****");
-        	return;
+        if (losingCandidate == null) {
+            System.out.println("***** Game hath run out of moves before checkmate or stalemate. *****");
+            return;
         }
         if (losingCandidate.king.isInCheck(board)) {
             System.out.println("Player " + losingCandidate.name
@@ -64,15 +73,13 @@ public class Game
     }
 
     private void nextHalfturn() {
-    	if (white.isInCheck(board))
-    	{
-    		System.out.println("White is in check.");
-    	}
-    	if (black.isInCheck(board))
-    	{
-    		System.out.println("Black is in check.");
-    	}
-    	
+        if (white.isInCheck(board)) {
+            System.out.println("White is in check.");
+        }
+        if (black.isInCheck(board)) {
+            System.out.println("Black is in check.");
+        }
+
         if (turn % 2 == 0) {
             System.out.println("White doth move:");
             white.makeMove(board);

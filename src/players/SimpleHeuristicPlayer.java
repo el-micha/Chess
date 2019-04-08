@@ -33,8 +33,8 @@ public class SimpleHeuristicPlayer extends Player {
         	b.undoMove(move);
         }
         
-        String origin = bestMove.originSquare().algPos();
-        String target = bestMove.targetSquare().algPos();
+        String origin = bestMove.originSquare().convertBoardToOutput();
+        String target = bestMove.targetSquare().convertBoardToOutput();
         String victim;
         //System.out.println("NOW MOVING FOR REAL...........................");
         if (bestMove.taking()) {

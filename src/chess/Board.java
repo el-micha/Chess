@@ -1,7 +1,6 @@
 package chess;
 
 import java.util.ArrayList;
-
 import pieces.Piece;
 import players.Player;
 
@@ -25,7 +24,7 @@ public class Board
         // Black = 0, White = 1; Top left square is white, so 1.
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                squares[i][j] = new Square(i, j, this);
+                squares[i][j] = new Square(i, j);
             }
         }
         moveHistory = new ArrayList<Move>();
@@ -200,48 +199,59 @@ public class Board
 
         return s;
     }
-    
-    public int valuation(Player p)
-    {
-    	int count = 0;	
-    	for (int i = 0; i < 8; i++) {
+
+    public int valuation(Player p) {
+        int count = 0;
+        for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (squares[i][j].getVisitor() != null  && squares[i][j].getVisitor().color == p.color)
-                	count += squares[i][j].getVisitor().getValue();
+                if (squares[i][j].getVisitor() != null && squares[i][j].getVisitor().color == p.color)
+                    count += squares[i][j].getVisitor().getValue();
             }
-        } 
-    	return count;
+        }
+        return count;
     }
-    
+
     public String charToSymbol(String ch) {
         return ch;
-        
-//        if (ch.equals("K"))
-//        	return "\u2654";
-//        if (ch.equals("Q"))
-//        	return "\u2655";
-//        if (ch.equals("R"))
-//        	return "\u2656";
-//        if (ch.equals("B"))
-//        	return "\u2657";
-//        if (ch.equals("N"))
-//        	return "\u2658";
-//        if (ch.equals("P"))
-//        	return "\u2659";
-//        if (ch.equals("k"))
-//        	return "\u265A";
-//        if (ch.equals("q"))
-//        	return "\u265B";
-//        if (ch.equals("r"))
-//        	return "\u265C";
-//        if (ch.equals("b"))
-//        	return "\u265D";
-//        if (ch.equals("n"))
-//        	return "\u265E";
-//        if (ch.equals("p"))
-//        	return "\u265F";
-//        return ch;
-         
+
+        // if (ch.equals("K"))
+        // return "\u2654";
+        // if (ch.equals("Q"))
+        // return "\u2655";
+        // if (ch.equals("R"))
+        // return "\u2656";
+        // if (ch.equals("B"))
+        // return "\u2657";
+        // if (ch.equals("N"))
+        // return "\u2658";
+        // if (ch.equals("P"))
+        // return "\u2659";
+        // if (ch.equals("k"))
+        // return "\u265A";
+        // if (ch.equals("q"))
+        // return "\u265B";
+        // if (ch.equals("r"))
+        // return "\u265C";
+        // if (ch.equals("b"))
+        // return "\u265D";
+        // if (ch.equals("n"))
+        // return "\u265E";
+        // if (ch.equals("p"))
+        // return "\u265F";
+        // return ch;
+
+    }
+
+    // We assume the Input is always in this form: "A2"
+    public Square convertInputToBoard(String stringCoordinate) {
+        char[] move;
+        // Do this before calling this function
+        // move = stringCoordinate.split("[,]");
+        move = stringCoordinate.toCharArray();
+        int col = move[0] - 'a';
+        int row = 8 - Character.getNumericValue(move[1]);
+        Square square = new Square(col, row);
+        return square;
     }
 
 }

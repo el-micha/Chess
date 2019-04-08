@@ -29,8 +29,8 @@ public class RandomPlayer extends Player
 //        }
          
         Move randomMove = legalMoves.get(new Random().nextInt(legalMoves.size()));
-        String origin = randomMove.originSquare().algPos();
-        String target = randomMove.targetSquare().algPos();
+        String origin = randomMove.originSquare().convertBoardToOutput();
+        String target = randomMove.targetSquare().convertBoardToOutput();
         String victim;
         //System.out.println("NOW MOVING FOR REAL...........................");
         if (randomMove.taking()) {
