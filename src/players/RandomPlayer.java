@@ -8,8 +8,8 @@ import chess.Move;
 public class RandomPlayer extends Player
 {
 
-    public RandomPlayer(int col, String n, Board b) {
-        super(col, n, b);
+    public RandomPlayer(int col, String n) {
+        super(col, n);
 
     }
 

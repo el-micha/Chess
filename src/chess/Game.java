@@ -23,13 +23,11 @@ public class Game
 
     public Game() {
         board = new Board(this);
-        white = new RandomPlayer(1, "White", board);
-        black = new SimpleHeuristicPlayer(0, "Black", board);
+        white = new RandomPlayer(1, "White");
+        black = new RandomPlayer(0, "Black");
+        //black = new SimpleHeuristicPlayer(0, "Black");
 
-        // set pieces on board
-        board.setupInitial(white.pieces);
-        board.setupInitial(black.pieces);
-
+        
         turn = 0;
 
         System.out.println("Created Game");
@@ -50,7 +48,7 @@ public class Game
         	System.out.println("***** Game hath run out of moves before checkmate or stalemate. *****");
         	return;
         }
-        if (losingCandidate.king.isInCheck(board)) {
+        if (board.isInCheck(losingCandidate.color)) {
             System.out.println("Player " + losingCandidate.name
                     + ", that utter wretch, is also in check, wherefore his King is dead and he hath lost.");
             System.out.println("Player " + otherPlayer(losingCandidate).name + " wins the game.");
@@ -64,11 +62,11 @@ public class Game
     }
 
     private void nextHalfturn() {
-    	if (white.isInCheck(board))
+    	if (board.isInCheck(white))
     	{
     		System.out.println("White is in check.");
     	}
-    	if (black.isInCheck(board))
+    	if (board.isInCheck(black))
     	{
     		System.out.println("Black is in check.");
     	}
@@ -101,7 +99,7 @@ public class Game
 
     public Piece callbackPromotion(Piece promotee, Square targetSquare) {
         promotee.setDead();
-        Piece queen = new Queen(promotee.player, targetSquare);
+        Piece queen = new Queen(promotee.color, targetSquare);
         return queen;
     }
 

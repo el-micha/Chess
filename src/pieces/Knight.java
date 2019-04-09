@@ -12,8 +12,8 @@ public class Knight extends Piece
     // the king will need this, too, to determine whether he is in check.
     public static int[][] knightTranslations = {{-2, -1}, {-2, 1}, {-1, -2}, {-1, 2}, {1, -2}, {1, 2}, {2, -1}, {2, 1}};
 
-    public Knight(Player p, Square pos) {
-        super(p, pos);
+    public Knight(int col, Square pos) {
+        super(col, pos);
         name = "Knight";
         c = "n";
         value = 3;

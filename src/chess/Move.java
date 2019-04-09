@@ -112,7 +112,7 @@ public class Move
     }
 
     private boolean inEndRank() {
-        return ((agent.player.color == 0 && targetSquare.x == 7) || (agent.player.color == 1 && targetSquare.x == 0));
+        return ((agent.color == 0 && targetSquare.x == 7) || (agent.color == 1 && targetSquare.x == 0));
     }
 
 }

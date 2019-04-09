@@ -7,8 +7,8 @@ import chess.Move;
 
 public class SimpleHeuristicPlayer extends Player {
 
-	public SimpleHeuristicPlayer(int col, String n, Board b) {
-		super(col, n, b);
+	public SimpleHeuristicPlayer(int col, String n) {
+		super(col, n);
 	}
 
 	@Override
@@ -21,10 +21,10 @@ public class SimpleHeuristicPlayer extends Player {
         
         Move bestMove = null;
         int bestValue = -999;
-        for (Move move :legalMoves)
+        for (Move move : legalMoves)
         {
         	b.applyMove(move);
-        	int value = - b.valuation(this) + b.valuation(b.game.otherPlayer(this));
+        	int value =  b.valuation(this) - b.valuation(b.game.otherPlayer(this));
         	if (value > bestValue)
         	{
         		bestMove = move;

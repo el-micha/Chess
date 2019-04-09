@@ -11,8 +11,8 @@ public class King extends Piece
     public static int[][] kingTranslations = {{-1, -1}, {-1, 1}, {-1, 0}, {0, -1}, {0, 1}, {1, -1}, {1, 1}, {1, 0}};
     // TODO: these translations are wrong, because they allow King to move across border. 8 - 1 = 7
 
-    public King(Player p, Square position) {
-        super(p, position);
+    public King(int col, Square position) {
+        super(col, position);
         name = "King";
         c = "k";
         value = 1;
