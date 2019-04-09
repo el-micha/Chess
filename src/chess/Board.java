@@ -1,7 +1,6 @@
 package chess;
 
 import java.util.ArrayList;
-
 import pieces.Piece;
 import players.Player;
 
@@ -17,7 +16,6 @@ public class Board
     public Game game;
     private Square[][] squares;
     private ArrayList<Move> moveHistory;
-    private ArrayList<Piece> takenPieces;
 
     public Board(Game g) {
         game = g;
@@ -29,7 +27,6 @@ public class Board
             }
         }
         moveHistory = new ArrayList<Move>();
-        takenPieces = new ArrayList<Piece>();
 
         System.out.println("Created Board ");
     }
@@ -44,11 +41,17 @@ public class Board
         }
     }
 
-    public Square getSquare(int x, int y) {
-        if (x < 8 && x >= 0 && y < 8 && y >= 0)
-            return squares[x][y];
-        // System.out.println("Bad square: " + x + "/" + y);
-        return null;
+    /**
+     * Return list of legal moves for the pieces with the given color.
+     * We use color instead of player so that any player can evaluate moves of any player
+     * 
+     * @param p
+     * @return
+     */
+    public ArrayList<Move> getLegalMoves(int color) {
+        ArrayList<Move> legalMoves = new ArrayList<>();
+
+        return legalMoves;
     }
 
     /**
@@ -81,11 +84,10 @@ public class Board
 
     public void applyMove(Move move) {
         /*
-         * normal harmless move
-         * taking move
-         * 
-         * castling: not taking
-         * promotion: harmless or taking
+         * - normal harmless move
+         * - taking move
+         * - castling: not taking
+         * - promotion: harmless or taking
          */
 
         // 1) move the piece and 2) remove targetPiece
@@ -141,6 +143,13 @@ public class Board
 
         move.agent().resetMoved();
         moveHistory.remove(move);
+    }
+
+    public Square getSquare(int x, int y) {
+        if (x < 8 && x >= 0 && y < 8 && y >= 0)
+            return squares[x][y];
+        // System.out.println("Bad square: " + x + "/" + y);
+        return null;
     }
 
     public Square translate(Square start, int[] trans) {
@@ -200,48 +209,47 @@ public class Board
 
         return s;
     }
-    
-    public int valuation(Player p)
-    {
-    	int count = 0;	
-    	for (int i = 0; i < 8; i++) {
+
+    public int valuation(Player p) {
+        int count = 0;
+        for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (squares[i][j].getVisitor() != null  && squares[i][j].getVisitor().color == p.color)
-                	count += squares[i][j].getVisitor().getValue();
+                if (squares[i][j].getVisitor() != null && squares[i][j].getVisitor().color == p.color)
+                    count += squares[i][j].getVisitor().getValue();
             }
-        } 
-    	return count;
+        }
+        return count;
     }
-    
+
     public String charToSymbol(String ch) {
         return ch;
-        
-//        if (ch.equals("K"))
-//        	return "\u2654";
-//        if (ch.equals("Q"))
-//        	return "\u2655";
-//        if (ch.equals("R"))
-//        	return "\u2656";
-//        if (ch.equals("B"))
-//        	return "\u2657";
-//        if (ch.equals("N"))
-//        	return "\u2658";
-//        if (ch.equals("P"))
-//        	return "\u2659";
-//        if (ch.equals("k"))
-//        	return "\u265A";
-//        if (ch.equals("q"))
-//        	return "\u265B";
-//        if (ch.equals("r"))
-//        	return "\u265C";
-//        if (ch.equals("b"))
-//        	return "\u265D";
-//        if (ch.equals("n"))
-//        	return "\u265E";
-//        if (ch.equals("p"))
-//        	return "\u265F";
-//        return ch;
-         
+
+        // if (ch.equals("K"))
+        // return "\u2654";
+        // if (ch.equals("Q"))
+        // return "\u2655";
+        // if (ch.equals("R"))
+        // return "\u2656";
+        // if (ch.equals("B"))
+        // return "\u2657";
+        // if (ch.equals("N"))
+        // return "\u2658";
+        // if (ch.equals("P"))
+        // return "\u2659";
+        // if (ch.equals("k"))
+        // return "\u265A";
+        // if (ch.equals("q"))
+        // return "\u265B";
+        // if (ch.equals("r"))
+        // return "\u265C";
+        // if (ch.equals("b"))
+        // return "\u265D";
+        // if (ch.equals("n"))
+        // return "\u265E";
+        // if (ch.equals("p"))
+        // return "\u265F";
+        // return ch;
+
     }
 
 }
