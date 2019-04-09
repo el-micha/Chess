@@ -129,12 +129,30 @@ public class Board
      * @param p
      * @return
      */
-    public ArrayList<Move> getLegalMoves(int color) {
-        ArrayList<Move> legalMoves = new ArrayList<>();
-        
-        return legalMoves;
+    public ArrayList<Move> getLegalMoves(Player p, boolean simulation) {
+    	return getLegalMoves(p.color, simulation);
     }
-
+    
+    public ArrayList<Move> getLegalMoves(int color, boolean simulation) {
+        ArrayList<Move> legalMoves = new ArrayList<>();
+        ArrayList<Piece> pieces = getPieces(color);
+        
+        for (int i = 0; i < pieces.size(); i++) {
+            Piece piece = pieces.get(i);
+            if (!piece.isAlive()) {
+                continue;
+            }
+            legalMoves.addAll(piece.legalMoves(this));
+        }
+        if (!simulation && legalMoves.size() == 0)
+        {
+        	game.callbackOutOfLegalMoves(color);
+        }
+        return legalMoves;
+        
+    }
+    
+    
     /**
      * Check if targetSquare is empty or an enemy
      * Kill piece on targetSquare, prepare to return it.

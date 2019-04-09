@@ -33,11 +33,32 @@ public class Game
         System.out.println("Created Game");
         System.out.println(board.toString());
     }
+    
+    
 
     public void play(int maxMoves) {
         for (int i = 0; i < maxMoves; i++) {
             System.out.println("++++++++++++++++++++++++++++++ Halfturn " + i + " ++++++++++++++++++++++++++++++");
             nextHalfturn();
+            
+            if (board.isInCheck(white))
+        	{
+        		System.out.println("White is in check.");
+        	}
+        	if (board.isInCheck(black))
+        	{
+        		System.out.println("Black is in check.");
+        	}
+        	
+        	if (turn > 1 && board.getLastMove().isPromotion()) {
+                System.out.println("Promotion!");
+            }
+            if (turn > 1 && board.getLastMove().isCastling()) {
+                System.out.println("Castling!");
+            }
+            turn++;
+            System.out.println(board.toString());
+            
             // check if board is won, stale etc
             if (gameFinished) {
                 break;
@@ -62,14 +83,6 @@ public class Game
     }
 
     private void nextHalfturn() {
-    	if (board.isInCheck(white))
-    	{
-    		System.out.println("White is in check.");
-    	}
-    	if (board.isInCheck(black))
-    	{
-    		System.out.println("Black is in check.");
-    	}
     	
         if (turn % 2 == 0) {
             System.out.println("White doth move:");
@@ -78,16 +91,7 @@ public class Game
         if (turn % 2 == 1) {
             System.out.println("Black doth move:");
             black.makeMove(board);
-
         }
-        if (turn > 1 && board.getLastMove().isPromotion()) {
-            System.out.println("Promotion!");
-        }
-        if (turn > 1 && board.getLastMove().isCastling()) {
-            System.out.println("Castling!");
-        }
-        turn++;
-        System.out.println(board.toString());
 
     }
 
@@ -110,11 +114,20 @@ public class Game
      * @param p
      * @param simulation
      */
-    public void callbackOutOfLegalMoves(Player p, boolean simulation) {
-        if (!simulation) {
-            System.out.println("Player " + p.name + ", that fool, hath no more legal moves.");
-            gameFinished = true;
-            losingCandidate = p;
-        }
+    public void callbackOutOfLegalMoves(int color) {
+        losingCandidate = playerFromColor(color);
+        System.out.println("Player " + losingCandidate.name + ", that fool, hath no more legal moves.");
+        gameFinished = true;
+        
     }
+    
+    private Player playerFromColor(int color)
+    {
+    	if (color == 1)
+    	{
+    		return white;
+    	}
+    	return black;
+    }
+    
 }

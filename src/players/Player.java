@@ -21,42 +21,6 @@ public abstract class Player
         name = n;
     }
 
-//    public boolean isInCheck(Board b) {
-//        return b.isInCheck(color);
-//    }
-//
-//    public ArrayList<Move> legalMoves(Board b) {
-//        return legalMoves(b, true);
-//    }
-//    
-//    public ArrayList<Piece> getPieces(Board b)
-//    {
-//    	return b.getPieces(color);
-//    }
-//    
-    
-    /**
-     * if simulation == true, we ignore this because it occurred while thinking about future moves
-     * otherwise, the player has no moves left in their current situation and lose / tie
-     * 
-     */
-    //TODO: remove the callback and simulation; solve this better
-    public ArrayList<Move> legalMoves(Board b, boolean simulation) {
-    	ArrayList<Piece> pieces = b.getPieces(color);
-        ArrayList<Move> moves = new ArrayList<Move>();
-        for (int i = 0; i < pieces.size(); i++) {
-            Piece piece = pieces.get(i);
-            if (!piece.isAlive()) {
-                continue;
-            }
-            moves.addAll(piece.legalMoves(b));
-        }
-        if (moves.size() == 0) {
-            b.game.callbackOutOfLegalMoves(this, simulation);
-        }
-        return moves;
-    }
-
     public abstract void makeMove(Board b);
 
 }
