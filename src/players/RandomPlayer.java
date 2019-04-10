@@ -29,10 +29,15 @@ public class RandomPlayer extends Player
 //        }
          
         b.applyMove(myMove);
+        // b in zustand: gegner ist dran
+        ArrayList<Move> othrLegalMoves = legalMoves(b, false);
+        getLegalMovesFrorPlayer(otherPlayer, b);
+
         // System.out.println("Player " + name + " legal moves: ");
         // for (Move m : legalMoves) {
         // System.out.println(m.agent().name() + " at " + m.originSquare().algPos() + " to " + m.targetSquare().algPos());
         // }
+
         Move randomMove = legalMoves.get(new Random().nextInt(legalMoves.size()));
         String origin = randomMove.originSquare().algPos();
         String target = randomMove.targetSquare().algPos();
