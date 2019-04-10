@@ -111,7 +111,17 @@ public class Board
         boolean outOfMoves = (getLegalMoves(color, true).size() == 0);
         return outOfMoves && isInCheck(color);
     }
-
+    
+    public boolean isStalemate(Player p)
+    {
+    	return isStalemate(p.color);
+    }
+    
+    public boolean isStalemate(int color)
+    {
+    	return !isInCheck(color) && getLegalMoves(color, true).size() == 0;
+    }
+    
     public boolean isInCheck(Player p) {
         return isInCheck(p.color);
     }
@@ -337,6 +347,18 @@ public class Board
     }
 
     public int valuation(Player p) {
+    	if (isCheckmate(1 - p.color))
+    	{
+    		return 1000;
+    	}
+    	if (isStalemate(1 - p.color) || isStalemate(p.color))
+    	{
+    		return -500;
+    	}
+    	if (isInCheck(1 - p.color))
+    	{
+    		return 40;
+    	}
         int count = 0;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
