@@ -12,5 +12,4 @@ public class Main
     }
 }
 
-
 // loc: \n[\s]*

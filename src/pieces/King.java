@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import chess.Board;
 import chess.Move;
 import chess.Square;
-import players.Player;
 
 public class King extends Piece
 {
@@ -48,11 +47,11 @@ public class King extends Piece
         Piece r1_1 = b.getSquare(pos.x, pos.y - 3).getVisitor();
         Piece r1_2 = b.getSquare(pos.x, pos.y - 2).getVisitor();
         Piece r1_3 = b.getSquare(pos.x, pos.y - 1).getVisitor();
-        
+
         Piece r2 = b.getSquare(pos.x, pos.y + 3).getVisitor();
         Piece r2_1 = b.getSquare(pos.x, pos.y + 2).getVisitor();
         Piece r2_2 = b.getSquare(pos.x, pos.y + 1).getVisitor();
-        
+
         if (r1 != null && !r1.hasMoved && r1_1 == null && r1_2 == null && r1_3 == null) {
             Move m = new Move(b, this, b.getSquare(pos.x, pos.y - 2));
             moves.add(m);

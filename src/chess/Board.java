@@ -1,7 +1,6 @@
 package chess;
 
 import java.util.ArrayList;
-
 import pieces.Bishop;
 import pieces.King;
 import pieces.Knight;
@@ -23,13 +22,12 @@ public class Board
     public Game game;
     private Square[][] squares;
     private ArrayList<Move> moveHistory;
-    
+
     private ArrayList<Piece> whitePieces = new ArrayList<>();
     private ArrayList<Piece> blackPieces = new ArrayList<>();
-    
+
     private King whiteKing;
     private King blackKing;
-    
 
     public Board(Game g) {
         game = g;
@@ -41,26 +39,24 @@ public class Board
             }
         }
         moveHistory = new ArrayList<Move>();
-        
+
         initializePieces(0);
         initializePieces(1);
-        
+
         setupInitial(whitePieces);
         setupInitial(blackPieces);
-        
+
         System.out.println("Created Board ");
     }
-    
-    public ArrayList<Piece> getPieces(int color)
-    {
-    	if (color == 1)
-    		return whitePieces;
-    	return blackPieces;
+
+    public ArrayList<Piece> getPieces(int color) {
+        if (color == 1)
+            return whitePieces;
+        return blackPieces;
     }
-    
-    private void initializePieces(int color)
-    {    	
-    	int rank;
+
+    private void initializePieces(int color) {
+        int rank;
         int pawnRank;
         ArrayList<Piece> pieces;
         if (color == 1) {
@@ -72,7 +68,7 @@ public class Board
             pawnRank = 1;
             pieces = blackPieces;
         }
-        
+
         pieces.add(new Rook(color, getSquare(rank, 0)));
         pieces.add(new Knight(color, getSquare(rank, 1)));
         pieces.add(new Bishop(color, getSquare(rank, 2)));
@@ -82,36 +78,39 @@ public class Board
         pieces.add(new Rook(color, getSquare(rank, 7)));
         King king = new King(color, getSquare(rank, 4));
         pieces.add(king);
-        
-        if (color == 1)
-        {
-        	whiteKing = king;
+
+        if (color == 1) {
+            whiteKing = king;
+        } else {
+            blackKing = king;
         }
-        else
-        {
-        	blackKing = king;
-        }
-        
+
         for (int i = 0; i < 8; i++) {
             pieces.add(new Pawn(color, getSquare(pawnRank, i)));
         }
-        
+
     }
-    
-    public boolean isInCheck(Player p)
-    {
-    	return isInCheck(p.color);
+
+    public boolean isCheckmate(Player p) {
+        return isCheckmate(p.color);
     }
-    
-    public boolean isInCheck(int color)
-    {
-    	if (color == 1)
-    	{
-    		return whiteKing.isInCheck(this);
-    	}
-    	return blackKing.isInCheck(this);
+
+    public boolean isCheckmate(int color) {
+        boolean outOfMoves = (getLegalMoves(color, true).size() == 0);
+        return outOfMoves && isInCheck(color);
     }
-    
+
+    public boolean isInCheck(Player p) {
+        return isInCheck(p.color);
+    }
+
+    public boolean isInCheck(int color) {
+        if (color == 1) {
+            return whiteKing.isInCheck(this);
+        }
+        return blackKing.isInCheck(this);
+    }
+
     public Move getLastMove() {
         return moveHistory.get(moveHistory.size() - 1);
     }
@@ -130,13 +129,13 @@ public class Board
      * @return
      */
     public ArrayList<Move> getLegalMoves(Player p, boolean simulation) {
-    	return getLegalMoves(p.color, simulation);
+        return getLegalMoves(p.color, simulation);
     }
-    
+
     public ArrayList<Move> getLegalMoves(int color, boolean simulation) {
         ArrayList<Move> legalMoves = new ArrayList<>();
         ArrayList<Piece> pieces = getPieces(color);
-        
+
         for (int i = 0; i < pieces.size(); i++) {
             Piece piece = pieces.get(i);
             if (!piece.isAlive()) {
@@ -144,15 +143,13 @@ public class Board
             }
             legalMoves.addAll(piece.legalMoves(this));
         }
-        if (!simulation && legalMoves.size() == 0)
-        {
-        	game.callbackOutOfLegalMoves(color);
+        if (!simulation && legalMoves.size() == 0) {
+            game.callbackOutOfLegalMoves(color);
         }
         return legalMoves;
-        
+
     }
-    
-    
+
     /**
      * Check if targetSquare is empty or an enemy
      * Kill piece on targetSquare, prepare to return it.

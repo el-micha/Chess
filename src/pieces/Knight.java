@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import chess.Board;
 import chess.Move;
 import chess.Square;
-import players.Player;
 
 public class Knight extends Piece
 {

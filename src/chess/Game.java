@@ -4,7 +4,6 @@ import pieces.Piece;
 import pieces.Queen;
 import players.Player;
 import players.RandomPlayer;
-import players.SimpleHeuristicPlayer;
 
 public class Game
 {
@@ -25,32 +24,27 @@ public class Game
         board = new Board(this);
         white = new RandomPlayer(1, "White");
         black = new RandomPlayer(0, "Black");
-        //black = new SimpleHeuristicPlayer(0, "Black");
+        // black = new SimpleHeuristicPlayer(0, "Black");
 
-        
         turn = 0;
 
         System.out.println("Created Game");
         System.out.println(board.toString());
     }
-    
-    
 
     public void play(int maxMoves) {
         for (int i = 0; i < maxMoves; i++) {
             System.out.println("++++++++++++++++++++++++++++++ Halfturn " + i + " ++++++++++++++++++++++++++++++");
             nextHalfturn();
-            
-            if (board.isInCheck(white))
-        	{
-        		System.out.println("White is in check.");
-        	}
-        	if (board.isInCheck(black))
-        	{
-        		System.out.println("Black is in check.");
-        	}
-        	
-        	if (turn > 1 && board.getLastMove().isPromotion()) {
+
+            if (board.isInCheck(white)) {
+                System.out.println("White is in check.");
+            }
+            if (board.isInCheck(black)) {
+                System.out.println("Black is in check.");
+            }
+
+            if (turn > 1 && board.getLastMove().isPromotion()) {
                 System.out.println("Promotion!");
             }
             if (turn > 1 && board.getLastMove().isCastling()) {
@@ -58,16 +52,15 @@ public class Game
             }
             turn++;
             System.out.println(board.toString());
-            
+
             // check if board is won, stale etc
             if (gameFinished) {
                 break;
             }
         }
-        if (losingCandidate == null)
-        {
-        	System.out.println("***** Game hath run out of moves before checkmate or stalemate. *****");
-        	return;
+        if (losingCandidate == null) {
+            System.out.println("***** Game hath run out of moves before checkmate or stalemate. *****");
+            return;
         }
         if (board.isInCheck(losingCandidate.color)) {
             System.out.println("Player " + losingCandidate.name
@@ -83,7 +76,7 @@ public class Game
     }
 
     private void nextHalfturn() {
-    	
+
         if (turn % 2 == 0) {
             System.out.println("White doth move:");
             white.makeMove(board);
@@ -118,16 +111,14 @@ public class Game
         losingCandidate = playerFromColor(color);
         System.out.println("Player " + losingCandidate.name + ", that fool, hath no more legal moves.");
         gameFinished = true;
-        
+
     }
-    
-    private Player playerFromColor(int color)
-    {
-    	if (color == 1)
-    	{
-    		return white;
-    	}
-    	return black;
+
+    private Player playerFromColor(int color) {
+        if (color == 1) {
+            return white;
+        }
+        return black;
     }
-    
+
 }
