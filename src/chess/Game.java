@@ -37,6 +37,11 @@ public class Game
             System.out.println("++++++++++++++++++++++++++++++ Halfturn " + i + " ++++++++++++++++++++++++++++++");
             nextHalfturn();
 
+            if (board.isRemis()) {
+                System.out.println("Game ends as remis.");
+                break;
+            }
+
             if (board.isInCheck(white)) {
                 System.out.println("White is in check.");
             }

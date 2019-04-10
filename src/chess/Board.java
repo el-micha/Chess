@@ -49,6 +49,18 @@ public class Board
         System.out.println("Created Board ");
     }
 
+    public boolean isRemis() {
+        if (moveHistory.size() <= 50) {
+            return false;
+        }
+        for (Move move : moveHistory.subList(moveHistory.size() - 50, moveHistory.size() - 1)) {
+            if (move.taking() || move.agent().name().equals("Pawn")) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public ArrayList<Piece> getPieces(int color) {
         if (color == 1)
             return whitePieces;
