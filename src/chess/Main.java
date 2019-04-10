@@ -7,7 +7,7 @@ public class Main
         System.out.println("Hello");
         Game game = new Game();
 
-        game.play(1000);
+        game.play();
 
     }
 }

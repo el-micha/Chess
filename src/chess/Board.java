@@ -53,7 +53,7 @@ public class Board
         if (moveHistory.size() <= 50) {
             return false;
         }
-        for (Move move : moveHistory.subList(moveHistory.size() - 50, moveHistory.size() - 1)) {
+        for (Move move : moveHistory.subList(moveHistory.size() - 50, moveHistory.size())) {
             if (move.taking() || move.agent().name().equals("Pawn")) {
                 return false;
             }

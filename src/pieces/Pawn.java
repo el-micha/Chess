@@ -26,13 +26,13 @@ public class Pawn extends Piece
     @Override
     public ArrayList<Move> legalMoves(Board b) {
         /*
-         * Deal with the pawn's special moves here. Don't need legalTranslations because of #3 below
+         * Deal with the pawn's special moves here.
          * 1. long start
          * 2. take piece diagonally
          * 3. can't move ahead if piece there: no orthogonal taking
-         * 4. taking "en passant"
-         * white pawns move "up", so in -8 steps;
-         * black pawns move "down", in +8 steps
+         * 4. taking "en passant" TODO
+         * white pawns move "up", so in -1 steps;
+         * black pawns move "down", in +1 steps
          */
         ArrayList<Move> moves = new ArrayList<Move>();
 

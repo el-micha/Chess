@@ -32,15 +32,14 @@ public class Game
         System.out.println(board.toString());
     }
 
+    public void play() {
+        play(999999999);
+    }
+
     public void play(int maxMoves) {
         for (int i = 0; i < maxMoves; i++) {
             System.out.println("++++++++++++++++++++++++++++++ Halfturn " + i + " ++++++++++++++++++++++++++++++");
             nextHalfturn();
-
-            if (board.isRemis()) {
-                System.out.println("Game ends as remis.");
-                break;
-            }
 
             if (board.isInCheck(white)) {
                 System.out.println("White is in check.");
@@ -60,6 +59,11 @@ public class Game
 
             // check if board is won, stale etc
             if (gameFinished) {
+                break;
+            }
+
+            if (board.isRemis()) {
+                System.out.println("Game ends as remis.");
                 break;
             }
         }
