@@ -14,23 +14,7 @@ public class RandomPlayer extends Player
     }
 
     @Override
-    public void makeMove(Board b) {
-        ArrayList<Move> legalMoves = b.getLegalMoves(this, false);
-
-        if (legalMoves.size() == 0) {
-            // System.out.println("Player " + name + " has no more legal moves and loses.");
-            return;
-        }
-
-        b.applyMove(myMove);
-        // b in zustand: gegner ist dran
-        ArrayList<Move> othrLegalMoves = legalMoves(b, false);
-        getLegalMovesFrorPlayer(otherPlayer, b);
-
-        // System.out.println("Player " + name + " legal moves: ");
-        // for (Move m : legalMoves) {
-        // System.out.println(m.agent().name() + " at " + m.originSquare().algPos() + " to " + m.targetSquare().algPos());
-        // }
+    public void makeMove(Board b, ArrayList<Move> legalMoves) {
 
         Move randomMove = legalMoves.get(new Random().nextInt(legalMoves.size()));
         String origin = randomMove.originSquare().algPos();

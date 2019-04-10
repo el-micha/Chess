@@ -3,13 +3,6 @@ package players;
 import java.util.ArrayList;
 import chess.Board;
 import chess.Move;
-import pieces.Bishop;
-import pieces.King;
-import pieces.Knight;
-import pieces.Pawn;
-import pieces.Piece;
-import pieces.Queen;
-import pieces.Rook;
 
 public abstract class Player
 {
@@ -21,6 +14,21 @@ public abstract class Player
         name = n;
     }
 
-    public abstract void makeMove(Board b);
+    /**
+     * Wrap makeMove with this, to handle case where no legal moves exist.
+     * In this case, the false parameter to getLegalMoves ensures that we
+     * trigger the callback that ends the game.
+     * 
+     * @param b
+     */
+    public void makeMove(Board b) {
+        ArrayList<Move> legalMoves = b.getLegalMoves(this, false);
+        if (legalMoves.size() == 0) {
+            return;
+        }
+        makeMove(b, legalMoves);
+    }
+
+    public abstract void makeMove(Board b, ArrayList<Move> legalMoves);
 
 }
