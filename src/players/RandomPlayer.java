@@ -8,14 +8,14 @@ import chess.Move;
 public class RandomPlayer extends Player
 {
 
-    public RandomPlayer(int col, String n, Board b) {
-        super(col, n, b);
+    public RandomPlayer(int col, String n) {
+        super(col, n);
 
     }
 
     @Override
     public void makeMove(Board b) {
-        ArrayList<Move> legalMoves = legalMoves(b, false);
+        ArrayList<Move> legalMoves = b.getLegalMoves(this, false);
 
         if (legalMoves.size() == 0) {
             // System.out.println("Player " + name + " has no more legal moves and loses.");

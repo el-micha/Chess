@@ -11,8 +11,8 @@ public class Pawn extends Piece
 
     private int moveDirection;
 
-    public Pawn(Player p, Square pos) {
-        super(p, pos);
+    public Pawn(int col, Square pos) {
+        super(col, pos);
         name = "Pawn";
         c = "p";
         value = 1;

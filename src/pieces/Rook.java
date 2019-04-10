@@ -9,9 +9,9 @@ import players.Player;
 public class Rook extends Piece 
 {
 
-	public Rook(Player p, Square pos) 
+	public Rook(int col, Square pos) 
 	{
-		super(p, pos);
+		super(col, pos);
 		name = "Rook";
 		c = "r";
 		value = 5;

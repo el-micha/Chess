@@ -13,7 +13,6 @@ public abstract class Piece {
 	 * of legal moves Taken pieces are out of the game Can be used or unused.
 	 * Important for castling. Has color: 0 black, 1 white
 	 */
-	public final Player player;
 	public final int color;
 	public String c;
 
@@ -24,9 +23,8 @@ public abstract class Piece {
 	protected String name;
 	protected int value;
 
-	public Piece(Player p, Square position) {
-		player = p;
-		color = player.color;
+	public Piece(int col, Square position) {
+		color = col;
 		pos = position;
 		c = "@";
 		value = 0;
@@ -44,15 +42,13 @@ public abstract class Piece {
 	public boolean isAlive() {
 		return alive;
 	}
-
+	
 	public void setDead() {
 		alive = false;
-		player.callbackDead(this);
 	}
 
 	public void setAlive() {
 		alive = true;
-		player.callbackAlive(this);
 	}
 
 	public Square position() {
@@ -77,7 +73,7 @@ public abstract class Piece {
 	}
 
 	public String ch() {
-		if (player.color == 1) {
+		if (color == 1) {
 			return c.toUpperCase();
 		}
 		return c;
@@ -85,9 +81,9 @@ public abstract class Piece {
 
 	public abstract ArrayList<Move> legalMoves(Board b);
 
-	public boolean squareEmpty(Square square) {
-		return square.getVisitor() == null;
-	}
+//	public boolean squareEmpty(Square square) {
+//		return square.getVisitor() == null;
+//	}
 
 	public boolean occupiedByFriend(Square square) {
 		if (square.getVisitor() == null) {
@@ -110,12 +106,12 @@ public abstract class Piece {
 		 */
 		boolean danger = false;
 		b.applyMove(move);
-		if (player.king.isInCheck(b)) {
+		if (b.isInCheck(color)) {
 			danger = true;
 		}
 		b.undoMove(move);
 		// System.out.println("Piece: Done and undone move");
-		return danger; // || player.king.isInCheck(b);
+		return danger; // 
 	}
 
 	public boolean moveEndangersKing(Board b, Piece p, Square target) {

@@ -9,9 +9,9 @@ import players.Player;
 public class Bishop extends Piece 
 {
 
-	public Bishop(Player p, Square pos) 
+	public Bishop(int col, Square pos) 
 	{
-		super(p, pos);
+		super(col, pos);
 		name = "Bishop";
 		c = "b";
 		value = 3;
