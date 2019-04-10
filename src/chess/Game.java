@@ -2,6 +2,7 @@ package chess;
 
 import pieces.Piece;
 import pieces.Queen;
+import players.AlphaBetaPlayer;
 import players.Player;
 import players.RandomPlayer;
 
@@ -23,9 +24,10 @@ public class Game
     public Game() {
         board = new Board(this);
         white = new RandomPlayer(1, "White");
-        black = new RandomPlayer(0, "Black");
+        //black = new RandomPlayer(0, "Black");
         // black = new SimpleHeuristicPlayer(0, "Black");
-
+        //white = new AlphaBetaPlayer(1, "White", 2);
+        black = new AlphaBetaPlayer(0, "Black", 6);
         turn = 0;
 
         System.out.println("Created Game");
