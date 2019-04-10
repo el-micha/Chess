@@ -1,5 +1,6 @@
 package chess;
 
+import pieces.Pawn;
 import pieces.Piece;
 
 public class Move
@@ -15,21 +16,26 @@ public class Move
 
     /*
      * set these parameters once at creation and then leave them be.
+     * this is important, because the Board b reference will change; but the move members must not!
      */
 
     private final Piece agent;
     private final Piece targetPiece;
     private final Square originSquare;
     private final Square targetSquare;
-    private final boolean taking;
+    private boolean taking;
 
     // promotion?
     private final boolean isPromotion;
-    private final boolean isCastling;
     // castling?
+    private final boolean isCastling;
     private final Piece castlingPartner;
     private final Square castlingPartnerOrigin;
     private final Square castlingPartnerTarget;
+    // en passant?
+    private final boolean isPassant;
+    private final Piece passantVictim;
+    private final Square victimSquare;
 
     public Move(Board b, Piece a, Square targetS) {
         agent = a;
@@ -40,6 +46,7 @@ public class Move
 
         isPromotion = a.name().equals("Pawn") && inEndRank();
         isCastling = a.name().equals("King") && Math.abs(a.position().y - targetS.y) == 2;
+        isPassant = isPassant(b, a);
 
         if (isCastling) {
             // find direction of move in order to find which rook is partner.
@@ -68,6 +75,46 @@ public class Move
             castlingPartnerOrigin = null;
             castlingPartnerTarget = null;
         }
+
+        if (isPassant) {
+            victimSquare = b.translate(targetSquare,
+                    new int[]{-((Pawn)(a)).getMoveDirection(), 0});
+            passantVictim = b.pieceAt(victimSquare);
+            if (passantVictim == null) {
+                System.out.println("ERROR: Move: taking en passant found no victim.");
+            }
+            taking = true;
+        } else {
+            victimSquare = null;
+            passantVictim = null;
+        }
+    }
+
+    // a public and a private function. private is only called at creation to ensure state separation of Board and Move.
+    public boolean isPassant() {
+        return isPassant;
+    }
+
+    // a public and a private function. private is only called at creation to ensure state separation of Board and Move.
+    private boolean isPassant(Board b, Piece a) {
+        return a.name().equals("Pawn")
+                && b.getLastMove() != null
+                && b.getLastMove().isPawnDouble()
+                && Math.abs(b.getLastMove().targetSquare().y - a.position().y) == 1
+                && b.getLastMove().targetSquare().x == a.position().x
+                && targetSquare.y == b.getLastMove().targetSquare.y;
+    }
+
+    public boolean isPawnDouble() {
+        return (agent.name().equals("Pawn") && Math.abs(originSquare.x - targetSquare.x) == 2);
+    }
+
+    public Square victimSquare() {
+        return victimSquare;
+    }
+
+    public Piece passantVictim() {
+        return passantVictim;
     }
 
     public Piece agent() {
@@ -75,6 +122,10 @@ public class Move
     }
 
     public Piece targetPiece() {
+        if (isPassant) {
+            System.out.println("Warning: Targetpiece is from an en passant move.");
+            return passantVictim;
+        }
         return targetPiece;
     }
 

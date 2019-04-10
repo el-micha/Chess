@@ -23,6 +23,10 @@ public class Pawn extends Piece
         }
     }
 
+    public int getMoveDirection() {
+        return moveDirection;
+    }
+
     @Override
     public ArrayList<Move> legalMoves(Board b) {
         /*
@@ -65,6 +69,17 @@ public class Pawn extends Piece
         if (!(pos.x == 7)) {
             newPos = b.translate(pos, new int[]{1 * moveDirection, 1});
             if (newPos != null && occupiedByEnemy(newPos) && !moveEndangersKing(b, this, newPos)) {
+                moves.add(new Move(b, this, newPos));
+            }
+        }
+
+        // taking en passant?
+        // last move was a double move of a pawn that is now next to this one
+        Move lastMove = b.getLastMove();
+        if (lastMove != null && lastMove.isPawnDouble()) {
+            // is that pawn a neighbour now?
+            if (Math.abs(lastMove.targetSquare().y - pos.y) == 1 && lastMove.targetSquare().x == pos.x) {
+                newPos = b.translate(pos, new int[]{moveDirection, lastMove.targetSquare().y - pos.y});
                 moves.add(new Move(b, this, newPos));
             }
         }

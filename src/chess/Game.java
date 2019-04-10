@@ -54,6 +54,9 @@ public class Game
             if (turn > 1 && board.getLastMove().isCastling()) {
                 System.out.println("Castling!");
             }
+            if (turn > 1 && board.getLastMove().isPassant()) {
+                System.out.println("Taking en passant!");
+            }
             turn++;
             System.out.println(board.toString());
 

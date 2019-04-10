@@ -124,7 +124,10 @@ public class Board
     }
 
     public Move getLastMove() {
-        return moveHistory.get(moveHistory.size() - 1);
+        if (moveHistory.size() > 0) {
+            return moveHistory.get(moveHistory.size() - 1);
+        }
+        return null;
     }
 
     public void setupInitial(ArrayList<Piece> pieces) {
@@ -214,6 +217,13 @@ public class Board
             movePiece(move.castlingPartner(), move.castlingPartnerTarget());
         }
 
+        // 5) en passant
+        // agent has moved already. need to take the victim.
+        if (move.isPassant()) {
+            move.passantVictim().setDead();
+            detachPiece(move.passantVictim());
+        }
+
         move.agent().setMoved();
 
         moveHistory.add(move);
@@ -239,7 +249,8 @@ public class Board
         // 1) move the piece back
         movePiece(move.agent(), move.originSquare());
         // 2) recreate taken piece
-        if (move.taking()) {
+        // not for the en passant case, because the victim is not in the usual place!
+        if (move.taking() && !move.isPassant()) {
             move.targetPiece().setAlive();
             movePiece(move.targetPiece(), move.targetSquare());
         }
@@ -247,6 +258,13 @@ public class Board
         // 4) uncastling
         if (move.isCastling()) {
             movePiece(move.castlingPartner(), move.castlingPartnerOrigin());
+        }
+
+        // 5) en passant
+        // agent has been unmoved already. put victim back
+        if (move.isPassant()) {
+            move.passantVictim().setAlive();
+            movePiece(move.passantVictim(), move.victimSquare());
         }
 
         move.agent().resetMoved();
