@@ -37,10 +37,9 @@ public class Square
     }
 
     public void setVisitor(Piece p) {
-    	if (visitor != null && p != null)
-    	{
-    		System.out.println("Error in Square::setVisitor: Square already has visitor.");
-    	}
+        if (visitor != null && p != null) {
+            System.out.println("Error in Square::setVisitor: Square already has visitor.");
+        }
         visitor = p;
     }
 
@@ -59,7 +58,12 @@ public class Square
 
     }
 
-    public String algPos() {
-        return "" + x + "/" + y;
+    public String convertBoardToOutput() {
+        String stringCoordinate;
+        int row = 8 - x;
+        int colInt = 'a' + y;
+        char col = (char)colInt;
+        stringCoordinate = Character.toString(col) + Integer.toString(row);
+        return stringCoordinate;
     }
 }
