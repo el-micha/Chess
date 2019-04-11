@@ -7,13 +7,13 @@ public class Main
         System.out.println("Hello");
         Game game = new Game();
 
-        game.play();
-
-        // for (int i = 0; i < 1000; i++) {
         // game.play();
-        // game = new Game();
-        // System.out.println(i);
-        // }
+
+        for (int i = 0; i < 10; i++) {
+            game.play();
+            game = new Game();
+            System.out.println(i);
+        }
 
     }
 }

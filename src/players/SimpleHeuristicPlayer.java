@@ -2,13 +2,14 @@ package players;
 
 import java.util.ArrayList;
 import chess.Board;
+import chess.Game;
 import chess.Move;
 
 public class SimpleHeuristicPlayer extends Player
 {
 
-    public SimpleHeuristicPlayer(int col, String n) {
-        super(col, n);
+    public SimpleHeuristicPlayer(int col, String n, Game g) {
+        super(col, n, g);
     }
 
     @Override
