@@ -146,6 +146,7 @@ public class Move
     }
 
     public boolean isCastling() {
+
         return isCastling;
     }
 

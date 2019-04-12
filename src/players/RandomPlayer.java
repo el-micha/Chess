@@ -3,14 +3,13 @@ package players;
 import java.util.ArrayList;
 import java.util.Random;
 import chess.Board;
-import chess.Game;
 import chess.Move;
 
 public class RandomPlayer extends Player
 {
 
-    public RandomPlayer(int col, String n, Game g) {
-        super(col, n, g);
+    public RandomPlayer(int col, String n) {
+        super(col, n);
 
     }
 

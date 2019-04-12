@@ -19,9 +19,6 @@ public class Board
      * Has a win condition and can return the win state
      */
 
-    // TODO: detach moveHistory fromn board, so that board has a simpler state and can implement equality and hashing... to
-    // store it in a tree / map
-
     public Game game;
     private Square[][] squares;
     private ArrayList<Move> moveHistory;
@@ -49,7 +46,6 @@ public class Board
         setupInitial(whitePieces);
         setupInitial(blackPieces);
 
-        reCalculateStates();
         System.out.println("Created Board ");
     }
 
@@ -107,89 +103,36 @@ public class Board
 
     }
 
-    /**
-     * After each move, recalculate these states:
-     * black in check
-     * white in check
-     * black legalMoves
-     * white legalMoves
-     * 
-     * But when accessing them publicly, don't recalculate.
-     * Problem: moveEndangersKing creates and deletes lots of boards, on which theses states are called only once anyway...
-     * Possible fix by storing all boards ever created in a tree and retrieving them in case needed.
-     */
-
-    private boolean isWhiteInCheck = false;
-    private boolean isBlackInCheck = false;
-    private ArrayList<Move> whiteLegalMoves = new ArrayList<Move>();
-    private ArrayList<Move> blackLegalMoves = new ArrayList<Move>();
-
-    private void reCalculateStates() {
-        isWhiteInCheck = whiteKing.isInCheck(this);
-        isBlackInCheck = blackKing.isInCheck(this);
-        whiteLegalMoves = calculateLegalMoves(1);
-        blackLegalMoves = calculateLegalMoves(0);
+    public boolean isCheckmate(Player p) {
+        return isCheckmate(p.color);
     }
 
-    // PRIVATE to recalculate
-
-    private ArrayList<Move> calculateLegalMoves(int color) {
-        ArrayList<Move> legalMoves = new ArrayList<>();
-        ArrayList<Piece> pieces = getPieces(color);
-        for (int i = 0; i < pieces.size(); i++) {
-            Piece piece = pieces.get(i);
-            if (!piece.isAlive()) {
-                continue;
-            }
-            legalMoves.addAll(piece.legalMoves(this));
-        }
-        return legalMoves;
+    public boolean isCheckmate(int color) {
+        boolean outOfMoves = (getLegalMoves(color, true).size() == 0);
+        return outOfMoves && isInCheck(color);
     }
-
-    // PUBLIC, only access members; they are refreshed after each move
-
+    
+    public boolean isStalemate(Player p)
+    {
+    	return isStalemate(p.color);
+    }
+    
+    public boolean isStalemate(int color)
+    {
+    	return !isInCheck(color) && getLegalMoves(color, true).size() == 0;
+    }
+    
     public boolean isInCheck(Player p) {
         return isInCheck(p.color);
     }
 
     public boolean isInCheck(int color) {
         if (color == 1) {
-            return isWhiteInCheck;
+            return whiteKing.isInCheck(this);
         }
-        return isBlackInCheck;
+        return blackKing.isInCheck(this);
     }
 
-    public ArrayList<Move> getLegalMoves(int color) {
-        if (color == 1) {
-            return whiteLegalMoves;
-        }
-        return blackLegalMoves;
-        // TODO: callback / simulation
-    }
-
-    public ArrayList<Move> getLegalMoves(Player p) {
-        return getLegalMoves(p.color);
-    }
-
-    /////////////////////////////////////////////////////////
-
-    public boolean isCheckmate(Player p) {
-        return isCheckmate(p.color);
-    }
-
-    public boolean isCheckmate(int color) {
-        return getLegalMoves(color).size() == 0 && isInCheck(color);
-    }
-
-    public boolean isStalemate(Player p) {
-        return isStalemate(p.color);
-    }
-
-    public boolean isStalemate(int color) {
-        return !isInCheck(color) && getLegalMoves(color).size() == 0;
-    }
-
-    // TODO: should be a game member, not board
     public Move getLastMove() {
         if (moveHistory.size() > 0) {
             return moveHistory.get(moveHistory.size() - 1);
@@ -203,7 +146,34 @@ public class Board
         }
     }
 
-    // --------------------- APPLY MOVE and UNDO MOVE --------------------------
+    /**
+     * Return list of legal moves for the pieces with the given color.
+     * We use color instead of player so that any player can evaluate moves of any player
+     * 
+     * @param p
+     * @return
+     */
+    public ArrayList<Move> getLegalMoves(Player p, boolean simulation) {
+        return getLegalMoves(p.color, simulation);
+    }
+
+    public ArrayList<Move> getLegalMoves(int color, boolean simulation) {
+        ArrayList<Move> legalMoves = new ArrayList<>();
+        ArrayList<Piece> pieces = getPieces(color);
+
+        for (int i = 0; i < pieces.size(); i++) {
+            Piece piece = pieces.get(i);
+            if (!piece.isAlive()) {
+                continue;
+            }
+            legalMoves.addAll(piece.legalMoves(this));
+        }
+        if (!simulation && legalMoves.size() == 0) {
+            game.callbackOutOfLegalMoves(color);
+        }
+        return legalMoves;
+
+    }
 
     /**
      * Check if targetSquare is empty or an enemy
@@ -233,7 +203,7 @@ public class Board
         p.setPosition(null);
     }
 
-    public void applyMove(Move move, boolean definitive) {
+    public void applyMove(Move move) {
         /*
          * - normal harmless move
          * - taking move
@@ -267,12 +237,9 @@ public class Board
         move.agent().setMoved();
 
         moveHistory.add(move);
-        if (definitive) {
-            reCalculateStates();
-        }
     }
 
-    public void undoMove(Move move, boolean definitive) {
+    public void undoMove(Move move) {
         /*
          * move has the same information as in applyMove, but the board state has changed.
          * 
@@ -312,12 +279,7 @@ public class Board
 
         move.agent().resetMoved();
         moveHistory.remove(move);
-        if (definitive) {
-            reCalculateStates();
-        }
     }
-
-    // --------------------- ----------------------------- --------------------------
 
     public Square getSquare(int x, int y) {
         if (x < 8 && x >= 0 && y < 8 && y >= 0)
@@ -373,7 +335,7 @@ public class Board
             }
             s += (8 - (int)(cnt / 8)) + "|";
             for (Square square : rows) {
-                s += square.ch() + " ";
+                s += charToSymbol(square.ch()) + " ";
                 cnt++;
             }
 
@@ -385,15 +347,18 @@ public class Board
     }
 
     public int valuation(Player p) {
-        if (isCheckmate(1 - p.color)) {
-            return 1000;
-        }
-        if (isStalemate(1 - p.color) || isStalemate(p.color)) {
-            return -500;
-        }
-        if (isInCheck(1 - p.color)) {
-            return 40;
-        }
+    	if (isCheckmate(1 - p.color))
+    	{
+    		return 1000;
+    	}
+    	if (isStalemate(1 - p.color) || isStalemate(p.color))
+    	{
+    		return -500;
+    	}
+    	if (isInCheck(1 - p.color))
+    	{
+    		return 40;
+    	}
         int count = 0;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -402,6 +367,37 @@ public class Board
             }
         }
         return count;
+    }
+
+    public String charToSymbol(String ch) {
+        return ch;
+
+        // if (ch.equals("K"))
+        // return "\u2654";
+        // if (ch.equals("Q"))
+        // return "\u2655";
+        // if (ch.equals("R"))
+        // return "\u2656";
+        // if (ch.equals("B"))
+        // return "\u2657";
+        // if (ch.equals("N"))
+        // return "\u2658";
+        // if (ch.equals("P"))
+        // return "\u2659";
+        // if (ch.equals("k"))
+        // return "\u265A";
+        // if (ch.equals("q"))
+        // return "\u265B";
+        // if (ch.equals("r"))
+        // return "\u265C";
+        // if (ch.equals("b"))
+        // return "\u265D";
+        // if (ch.equals("n"))
+        // return "\u265E";
+        // if (ch.equals("p"))
+        // return "\u265F";
+        // return ch;
+
     }
 
 }

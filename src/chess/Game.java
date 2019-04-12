@@ -22,12 +22,12 @@ public class Game
 
     public Game() {
         board = new Board(this);
-        // white = new RandomPlayer(1, "White", this);
-        // black = new RandomPlayer(0, "Black", this);
-        // black = new SimpleHeuristicPlayer(0, "Black", this);
-        white = new AlphaBetaPlayer(1, "White", this, 4);
-        // white = new SimpleHeuristicPlayer(1, "White", this);
-        black = new AlphaBetaPlayer(0, "Black", this, 6);
+        //white = new RandomPlayer(1, "White");
+        //black = new RandomPlayer(0, "Black");
+        //black = new SimpleHeuristicPlayer(0, "Black");
+        white = new AlphaBetaPlayer(1, "White", 4);
+      	//white = new SimpleHeuristicPlayer(1, "White");
+        black = new AlphaBetaPlayer(0, "Black", 6);
         turn = 0;
 
         System.out.println("Created Game");
