@@ -22,11 +22,11 @@ public class Game
 
     public Game() {
         board = new Board(this);
-        //white = new RandomPlayer(1, "White");
-        //black = new RandomPlayer(0, "Black");
-        //black = new SimpleHeuristicPlayer(0, "Black");
+        // white = new RandomPlayer(1, "White");
+        // black = new RandomPlayer(0, "Black");
+        // black = new SimpleHeuristicPlayer(0, "Black");
         white = new AlphaBetaPlayer(1, "White", 4);
-      	//white = new SimpleHeuristicPlayer(1, "White");
+        // white = new SimpleHeuristicPlayer(1, "White");
         black = new AlphaBetaPlayer(0, "Black", 6);
         turn = 0;
 
