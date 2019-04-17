@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import pieces.Bishop;
 import pieces.King;
 import pieces.Knight;
@@ -401,6 +402,28 @@ public class Board
         // return "\u265F";
         // return ch;
 
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.deepHashCode(squares);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Board other = (Board)obj;
+        if (!Arrays.deepEquals(squares, other.squares))
+            return false;
+        return true;
     }
 
 }

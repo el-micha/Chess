@@ -30,6 +30,47 @@ public abstract class Piece
         value = 0;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (alive ? 1231 : 1237);
+        result = prime * result + color;
+        result = prime * result + (hasMoved ? 1231 : 1237);
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((pos == null) ? 0 : pos.x);
+        result = prime * result + ((pos == null) ? 0 : pos.y);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Piece other = (Piece)obj;
+        if (alive != other.alive)
+            return false;
+        if (color != other.color)
+            return false;
+        if (hasMoved != other.hasMoved)
+            return false;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        if (pos == null) {
+            if (other.pos != null)
+                return false;
+        } else if (!pos.equals(other.pos))
+            return false;
+        return true;
+    }
+
     public int getValue() {
         return value;
     }
