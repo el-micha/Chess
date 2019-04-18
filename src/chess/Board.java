@@ -2,6 +2,8 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import pieces.Bishop;
 import pieces.King;
 import pieces.Knight;
@@ -26,6 +28,10 @@ public class Board
      * 
      * https://www.baeldung.com/java-hashcode
      * 
+     * 
+     * 
+     * boardstate: hash of board
+     * boardproperties: class with check checks and legal moves.
      */
 
     public Game game;
@@ -37,6 +43,8 @@ public class Board
 
     private King whiteKing;
     private King blackKing;
+
+    private HashMap<Board, BoardProperties> knownBoards = new HashMap<>();
 
     public Board(Game g) {
         game = g;
@@ -55,19 +63,21 @@ public class Board
         setupInitial(whitePieces);
         setupInitial(blackPieces);
 
+        knownBoards.put(this, new BoardProperties(this));
+
         System.out.println("Created Board ");
     }
 
-    public boolean isRemis() {
-        if (moveHistory.size() <= 50) {
-            return false;
-        }
-        for (Move move : moveHistory.subList(moveHistory.size() - 50, moveHistory.size())) {
-            if (move.taking() || move.agent().name().equals("Pawn")) {
-                return false;
-            }
-        }
-        return true;
+    public void callbackBoardProperties(BoardProperties bp) {
+        knownBoards.put(this, bp);
+    }
+
+    public King getWhiteKing() {
+        return whiteKing;
+    }
+
+    public King getBlackKing() {
+        return blackKing;
     }
 
     public ArrayList<Piece> getPieces(int color) {
@@ -112,6 +122,18 @@ public class Board
 
     }
 
+    public boolean isRemis() {
+        if (moveHistory.size() <= 50) {
+            return false;
+        }
+        for (Move move : moveHistory.subList(moveHistory.size() - 50, moveHistory.size())) {
+            if (move.taking() || move.agent().name().equals("Pawn")) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public boolean isCheckmate(Player p) {
         return isCheckmate(p.color);
     }
@@ -134,6 +156,11 @@ public class Board
     }
 
     public boolean isInCheck(int color) {
+        BoardProperties boardState = knownBoards.get(this);
+        if (boardState != null) {
+            return boardState.isInCheck(color);
+        }
+        System.out.println("Board::isInCheck: Could not find this board in knownBoards.");
         if (color == 1) {
             return whiteKing.isInCheck(this);
         }
@@ -160,14 +187,19 @@ public class Board
      * @param p
      * @return
      */
-    public ArrayList<Move> getLegalMoves(Player p, boolean simulation) {
+    public List<Move> getLegalMoves(Player p, boolean simulation) {
         return getLegalMoves(p.color, simulation);
     }
 
-    public ArrayList<Move> getLegalMoves(int color, boolean simulation) {
-        ArrayList<Move> legalMoves = new ArrayList<>();
+    public List<Move> getLegalMoves(int color, boolean simulation) {
+        // TODO: perhaps handle callback here
+        BoardProperties boardState = knownBoards.get(this);
+        if (boardState != null) {
+            return boardState.getLegalMoves(color);
+        }
+        System.out.println("Board::getLegalMoves: Could not find this board in knownBoards.");
         ArrayList<Piece> pieces = getPieces(color);
-
+        ArrayList<Move> legalMoves = new ArrayList<>();
         for (int i = 0; i < pieces.size(); i++) {
             Piece piece = pieces.get(i);
             if (!piece.isAlive()) {
@@ -175,11 +207,7 @@ public class Board
             }
             legalMoves.addAll(piece.legalMoves(this));
         }
-        if (!simulation && legalMoves.size() == 0) {
-            game.callbackOutOfLegalMoves(color);
-        }
         return legalMoves;
-
     }
 
     /**

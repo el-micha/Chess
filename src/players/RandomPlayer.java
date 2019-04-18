@@ -1,6 +1,6 @@
 package players;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import chess.Board;
 import chess.Move;
@@ -14,7 +14,7 @@ public class RandomPlayer extends Player
     }
 
     @Override
-    public void makeMove(Board b, ArrayList<Move> legalMoves) {
+    public void makeMove(Board b, List<Move> legalMoves) {
 
         Move randomMove = legalMoves.get(new Random().nextInt(legalMoves.size()));
         String origin = randomMove.originSquare().convertBoardToOutput();

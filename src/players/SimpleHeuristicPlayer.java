@@ -1,6 +1,6 @@
 package players;
 
-import java.util.ArrayList;
+import java.util.List;
 import chess.Board;
 import chess.Move;
 
@@ -12,7 +12,7 @@ public class SimpleHeuristicPlayer extends Player
     }
 
     @Override
-    public void makeMove(Board b, ArrayList<Move> legalMoves) {
+    public void makeMove(Board b, List<Move> legalMoves) {
 
         Move bestMove = null;
         int bestValue = -999;

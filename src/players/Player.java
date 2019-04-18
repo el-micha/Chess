@@ -1,6 +1,6 @@
 package players;
 
-import java.util.ArrayList;
+import java.util.List;
 import chess.Board;
 import chess.Move;
 
@@ -22,13 +22,13 @@ public abstract class Player
      * @param b
      */
     public void makeMove(Board b) {
-        ArrayList<Move> legalMoves = b.getLegalMoves(this, false);
+        List<Move> legalMoves = b.getLegalMoves(this, false);
         if (legalMoves.size() == 0) {
             return;
         }
         makeMove(b, legalMoves);
     }
 
-    public abstract void makeMove(Board b, ArrayList<Move> legalMoves);
+    public abstract void makeMove(Board b, List<Move> legalMoves);
 
 }
